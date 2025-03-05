@@ -27,6 +27,10 @@ remotes::install_github("dmirman/gazer")
   
 Please use the issues tab (https://github.com/dmirman/gazer/issues) to file any bugs or suggestions.
  
+# Updates (March 2025)
+
+Added an upsampling function (`upsample_gaze()`) based on a request fromm user. You can now upsample pupil and gaze values. This was created for the webgazeR package, but thought it could be useful here, especially if you recorded pupil size with low frequency tracker. 
+
 # Updates (March 2022)
  
 It has been awhile! I have added some functionality for reading in asc files and pulling in important information to analyze with gazeR. This was with the help of Holger Mitterer! Right now the functionslity is a bit limited (only for events and gaze/VWP), but I am working on extending this. 
