@@ -29,7 +29,7 @@ Please use the issues tab (https://github.com/dmirman/gazer/issues) to file any 
  
 # Updates (March 2025)
 
-Added an upsampling function (`upsample_gaze()`) based on a request fromm user. You can now upsample pupil and gaze values. This was created for the webgazeR package, but thought it could be useful here, especially if you recorded pupil size with low frequency tracker. 
+Added an upsampling function (`upsample_gaze()`) based on a request from user. You can now upsample pupil and gaze values. This was created for the webgazeR package, but thought it could be useful here, especially if you recorded pupil size with low frequency tracker. 
 
 # Updates (March 2022)
  
