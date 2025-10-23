@@ -27,6 +27,11 @@ remotes::install_github("dmirman/gazer")
   
 Please use the issues tab (https://github.com/dmirman/gazer/issues) to file any bugs or suggestions.
  
+
+# Updates (October 2025)
+
+Support for Pupil Labs Neon devices 
+
 # Updates (March 2025)
 
 Added an upsampling function (`upsample_gaze()`) based on a request from user. You can now upsample pupil and gaze values. This was created for the webgazeR package, but thought it could be useful here, especially if you recorded pupil size with low frequency tracker. 
