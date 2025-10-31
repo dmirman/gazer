@@ -4,17 +4,31 @@
 \alias{downsample_gaze}
 \title{Downsample gaze data}
 \usage{
-downsample_gaze(dataframe, bin.length = 50, timevar = "time",
-  aggvars = list("subject", "condition", "target", "trial", "object",
-  "timebin"))
+downsample_gaze(
+  dataframe,
+  bin.length = 50,
+  timevar = "time",
+  aggvars = c("subject", "condition", "target", "trial", "object", "timebins"),
+  type = "gaze",
+  pupil = "baselinecorrectedp"
+)
 }
 \arguments{
-\item{dataframe}{dataframe}
+\item{dataframe}{DataFrame containing gaze data.}
 
-\item{bin.length}{Length of time bins}
+\item{bin.length}{Length of time bins.}
 
-\item{aggvars}{list of variable names to group by for aggregation}
+\item{timevar}{Column name representing time.}
+
+\item{aggvars}{Vector of variable names to group by for aggregation.}
+
+\item{type}{Type of data, either "pupil" for pupil data or "gaze" for gaze data.}
+
+\item{pupil}{column name representing pupil column}
+}
+\value{
+Downsampled DataFrame.
 }
 \description{
-This function will combine gaze samples into time bins
+This function will combine gaze samples into time bins.
 }
