@@ -30,7 +30,7 @@
 #' @import tibble
 #' @import readr
 #' @import janitor
-read_pl_subject <- function(subject_dir,
+parse_pl <- function(subject_dir,
                             subject_id = basename(normalizePath(subject_dir)),
                             max_event_lag_ms = 2000,
                             start_mode = c("any", "exact"),
