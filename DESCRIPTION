@@ -17,7 +17,7 @@ BugReports: http://github.com/dmirman/gazer/issues
 License: GPL-3
 LazyData: true
 Imports:
-    ggplot2, 
+   ggplot2, 
     data.table, 
     tidyverse, 
     lme4, 
