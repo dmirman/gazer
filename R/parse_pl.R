@@ -51,21 +51,23 @@ parse_pl <- function(subject_dir,
 
   # --- standardize gaze -------------------------------------------------------
   gaze <- gaze |>
-    dplyr::transmute(
+    dplyr::mutate(
       t_ns = timestamp_ns,
       t_ms = ns_to_ms(timestamp_ns),
       x = gaze_x_px, y = gaze_y_px,
       fixation_id = fixation_id,
       blink_id = blink_id,
-      blink = !is.na(blink_id) & blink_id != 0
+      blink = !is.na(blink_id) & blink_id != 0,
+      .keep="none"
     )
 
   eye3d <- eye3d |>
-    dplyr::transmute(
+    dplyr::mutate(
       t_ns = timestamp_ns,
       t_ms = ns_to_ms(timestamp_ns),
       pupil_left_mm  = pupil_diameter_left_mm,
-      pupil_right_mm = pupil_diameter_right_mm
+      pupil_right_mm = pupil_diameter_right_mm,
+      .keep="none"
     )
 
   gaze <- dplyr::left_join(gaze, eye3d, by = c("t_ns","t_ms"))
@@ -74,7 +76,7 @@ parse_pl <- function(subject_dir,
   rec_rx <- stringr::regex("^(recording\\.begin|recording\\.end)$", ignore_case = TRUE)
 
   events2 <- events |>
-    dplyr::transmute(
+    dplyr::mutate(
       t_ns = timestamp_ns,
       t_ms = ns_to_ms(timestamp_ns),
       event_id = as.character(name)
