@@ -37,7 +37,7 @@ process_all_subjects_PL <- function(root_dir,
     out_file <- file.path(output_dir, paste0(sid, "_processed.csv"))
     message("Processing: ", sid)
 
-    df <- try(read_pl_subject(sdir, sid, ...), silent = TRUE)
+    df <- try(parse_pl(sdir, sid, ...), silent = TRUE)
     if (inherits(df, "try-error")) {
       warning("Skipping ", sid)
       next

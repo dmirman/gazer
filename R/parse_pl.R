@@ -30,9 +30,10 @@
 #' @import tibble
 #' @import readr
 #' @import janitor
+
 parse_pl <- function(subject_dir,
                             subject_id = basename(normalizePath(subject_dir)),
-                            max_event_lag_ms = 2000,
+                            max_event_lag_ms = 50,
                             start_mode = c("any", "exact"),
                             start_messages = NULL) {
   stopifnot(dir.exists(subject_dir))
@@ -106,7 +107,7 @@ parse_pl <- function(subject_dir,
   df <- gaze |>
     dplyr::mutate(
       time    = t_ms - min(t_ms, na.rm = TRUE),
-      pupil   = compute_monocular_mean(pupil_left_mm, pupil_right_mm, need_both = FALSE),
+      pupil   = compute_monocular_mean(pupil_left_mm, pupil_right_mm),
       subject = subject_id
     ) |>
     dplyr::select(subject, time, x, y, pupil, blink, message) |>
