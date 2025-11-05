@@ -7,7 +7,8 @@
 parse_pl(
   subject_dir,
   subject_id = basename(normalizePath(subject_dir)),
-  max_event_lag_ms = 2000,
+  aoi = FALSE,
+  max_lag_event_ms = 100,
   start_mode = c("any", "exact"),
   start_messages = NULL
 )
@@ -17,28 +18,22 @@ parse_pl(
 
 \item{subject_id}{Character ID for the subject. Defaults to folder name.}
 
-\item{max_event_lag_ms}{Maximum absolute difference (ms) allowed when snapping an
-event to the nearest gaze row. Defaults to 2000.}
+\item{aoi}{Logical; if TRUE, use surface (AOI) stream as well.}
 
 \item{start_mode}{Trial start rule: \code{"any"} = any non-empty, non-recording message;
 \code{"exact"} = only messages in \code{start_messages} (normalized) start a trial.}
 
 \item{start_messages}{Character vector of trial-start messages when
-\code{start_mode = "exact"}. Case, stray whitespace, and hyphens/underscores are ignored.}
+\code{start_mode = "exact"}. Case/whitespace/punctuation ignored after normalization.}
+
+\item{max_event_lag_ms}{Maximum absolute difference (ms) allowed when snapping an
+event to the nearest gaze row. Defaults to 100.}
 }
 \value{
-A tibble with columns: \code{subject}, \code{trial}, \code{time}, \code{x}, \code{y}, \code{pupil}, \code{blink}, \code{message}.
+Tibble: \verb{subject, trial, time, x, y, pupil, blink, message, start_message_first}.
 }
 \description{
-Reads \code{gaze.csv}, \verb{3d_eye_states.csv}, and \code{events.csv} from a subject folder,
+Reads \code{gaze.csv}, \verb{3d_eye_states.csv}, \code{events.csv}, and \code{gaze_surface.csv} from a subject folder,
 attaches the nearest (non-recording) event to gaze rows (within a lag), defines
 trial boundaries, removes blank trials, and resets \code{time} to 0 within each trial.
-}
-\examples{
-\dontrun{
-df <- read_pl_subject("path/to/subj001",
-                      start_mode = "exact",
-                      start_messages = c("trial-started-light", "start-dark"))
-}
-
 }
