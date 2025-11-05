@@ -19,7 +19,7 @@
 parse_pl <- function(subject_dir,
                      subject_id = basename(normalizePath(subject_dir)),
                      aoi = FALSE,
-                     max_lag_event_ms = 100,
+                     max_event_lag_ms = 100,
                      start_mode = c("any", "exact"),
                      start_messages = NULL) {
   stopifnot(dir.exists(subject_dir))
@@ -86,7 +86,8 @@ parse_pl <- function(subject_dir,
 
   if (isTRUE(aoi)) {
     # =========================== AOI branch ===================================
-    gaze_surface <- readr::read_csv(file.path(subject_dir, "gaze_surface.csv"), show_col_types = FALSE) |> janitor::clean_names()
+    gaze_surface <- readr::read_csv(file.path(subject_dir, "gaze_surface.csv"), show_col_types = FALSE) |>
+      janitor::clean_names()
 
     gaze_aoi <- gaze_surface |>
       dplyr::mutate(
@@ -136,7 +137,6 @@ parse_pl <- function(subject_dir,
     start_set_norm <- if (start_mode == "exact") normalize_msg(start_messages) else character()
 
     df <- df |>
-      dplyr::group_by(subject) |>
       dplyr::mutate(
         .msg_txt = dplyr::coalesce(as.character(message), ""),
         .msg_norm = normalize_msg(.msg_txt),
@@ -166,8 +166,8 @@ parse_pl <- function(subject_dir,
       dplyr::mutate(time = time - dplyr::first(time)) |>
       dplyr::ungroup() |>
       select(
-        subject, trial, time, gaze_position_on_surface_x_normalized,
-        gaze_position_on_surface_y_normalized, pupil, blink, message, start_message_first, fixation_id
+        subject, trial, time, gaze_detected_on_surface, gaze_position_on_surface_x_normalized,
+        gaze_position_on_surface_y_normalized, pupil, blink, message, fixation_id
       )
 
     df
@@ -196,9 +196,10 @@ parse_pl <- function(subject_dir,
     # --- trial detection --------------------------------------------------------
     start_set_norm <- if (start_mode == "exact") normalize_msg(start_messages) else character()
 
-    df <- df |>
-      dplyr::group_by(subject) |>
+    df <- gaze |>
       dplyr::mutate(
+        subject=subject_id,
+        time = t_ms - first(t_ms),
         .msg_txt = dplyr::coalesce(as.character(message), ""),
         .msg_norm = normalize_msg(.msg_txt),
         .valid_msg = is_valid_msg(.msg_txt),

@@ -8,7 +8,7 @@ parse_pl(
   subject_dir,
   subject_id = basename(normalizePath(subject_dir)),
   aoi = FALSE,
-  max_lag_event_ms = 100,
+  max_event_lag_ms = 100,
   start_mode = c("any", "exact"),
   start_messages = NULL
 )
@@ -20,14 +20,14 @@ parse_pl(
 
 \item{aoi}{Logical; if TRUE, use surface (AOI) stream as well.}
 
+\item{max_event_lag_ms}{Maximum absolute difference (ms) allowed when snapping an
+event to the nearest gaze row. Defaults to 100.}
+
 \item{start_mode}{Trial start rule: \code{"any"} = any non-empty, non-recording message;
 \code{"exact"} = only messages in \code{start_messages} (normalized) start a trial.}
 
 \item{start_messages}{Character vector of trial-start messages when
 \code{start_mode = "exact"}. Case/whitespace/punctuation ignored after normalization.}
-
-\item{max_event_lag_ms}{Maximum absolute difference (ms) allowed when snapping an
-event to the nearest gaze row. Defaults to 100.}
 }
 \value{
 Tibble: \verb{subject, trial, time, x, y, pupil, blink, message, start_message_first}.
