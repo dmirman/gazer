@@ -15,13 +15,13 @@ Description: Functions for reading and pre-processing eye tracking data.
 URL: http://github.com/dmirman/gazer
 BugReports: http://github.com/dmirman/gazer/issues
 License: GPL-3
+depends: R (>= 4.1.0)
 LazyData: true
 Imports:
    ggplot2, 
-    data.table, 
     tidyverse, 
     lme4, 
-    zoo
+    data.table
 Remotes: tmalsburg/saccades/saccades
 RoxygenNote: 7.3.2
 Suggests: knitr,
