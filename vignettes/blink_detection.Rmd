@@ -1,17 +1,30 @@
 ---
 title: "Blink Detection"
 author: "Jason Geller"
-date: "12/5/2020"
-output: html_document
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Blink Detection}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  echo = TRUE,
+  fig.width = 9,
+  fig.height = 4.5,
+  dpi = 110,
+  out.width = "100%"
+)
 ```
 
-While it is generally agreed that blinks need to be taken care of during preprocessing, most eye tracking software does not include this event information. This has lead to the development of several great blink algorithms. I decided to implement a velocity based one in gazeR. It is a very simple and intuitive algo and does a nice job recovering the pupil data. 
+While it is generally agreed that blinks need to be taken care of during preprocessing, most eye tracking software does not include this event information. This has lead to the development of several great blink algorithms. gazeR includes two:
 
-This vignette will show how you the steps involved in identifying blinks that underlie the`blink_velocity' function in gazeR. 
+1. A **velocity-based** detector (`blink_velocity()`) — simple and intuitive; finds blinks by looking at how fast the pupil signal is changing.
+2. A **noise-based** detector (`detect_blinks_noise()`) — implements Hershman, Henik & Cohen (2018); starts from the tracker's missing-data sentinel and refines each blink's onset and offset by walking outward on the smoothed first-difference signal.
+
+This vignette walks through both. The velocity-based steps below illustrate what is happening inside `blink_velocity()`; the final section shows how to call the noise-based detector directly.
 
 First load gazeR and some sample data. 
 
@@ -142,4 +155,191 @@ plot(pupil)
 ```
 
 
+# Noise-based Blink Detection (Hershman, Henik & Cohen, 2018)
+
+The velocity-based detector above works well when blinks produce a clean drop / recovery pattern in the pupil signal. A complementary approach, due to Hershman, Henik & Cohen (2018), starts from the *missing-data* samples the tracker already emits (zeros on Tobii, `NA` on EyeLink) and refines each missing run outward — finding the last "calm" sample before the eyelid descent and the first calm sample after the recovery rise. Adjacent blinks that fall within a small gap are merged.
+
+`detect_blinks_noise()` is tracker-agnostic: by default it treats both `0` and `NA` as missing, so the same call works for Tobii and EyeLink-style exports without configuration.
+
+It composes with `dplyr` the same way as `extend_blinks()` — call it inside `mutate()` under a `group_by()` so blink IDs restart per trial:
+
+```{r, warning=FALSE, message=FALSE}
+blinks_noise <- interp_graph %>%
+  dplyr::group_by(subject, trial) %>%
+  dplyr::mutate(blink = detect_blinks_noise(pupil, hz = 250, smooth_ms = 20)) %>%
+  dplyr::ungroup()
+```
+
+We're using `smooth_ms = 20` here (rather than the 10 ms default) because, on this recording, the default windows clip a bit of the eyelid descent and recovery — see the parameter sweep further down for the comparison.
+
+The result is an integer column `blink`: `0` outside detected blinks, `1, 2, …` inside each blink.
+
+## What did the detector actually flag?
+
+Before looking at interpolated output, it's worth visualizing exactly which samples the algorithm marked as blink. The figure below shades each detected blink region in light orange on top of the raw trace. The dotted vertical lines mark where the tracker reported missing samples (`NA`s) — note how `detect_blinks_noise()` widens each missing-data run outward to capture the eyelid descent and recovery on either side.
+
+```{r, warning=FALSE, message=FALSE, fig.height=5}
+library(dplyr)
+
+# One-row-per-blink summary: start time, end time, blink id.
+blink_windows <- blinks_noise %>%
+  dplyr::filter(blink > 0) %>%
+  dplyr::group_by(blink) %>%
+  dplyr::summarise(start = min(time), end = max(time), .groups = "drop")
+
+# Times where the tracker itself reported a missing sample.
+na_times <- blinks_noise %>%
+  dplyr::filter(is.na(pupil)) %>%
+  dplyr::pull(time)
+
+pup_noise_regions <- ggplot(blinks_noise, aes(x = time, y = pupil)) +
+  geom_rect(data = blink_windows,
+            aes(xmin = start, xmax = end, ymin = -Inf, ymax = Inf),
+            inherit.aes = FALSE,
+            fill = "darkorange", alpha = 0.18) +
+  geom_vline(xintercept = na_times, colour = "grey50",
+             linetype = "dotted", alpha = 0.4) +
+  geom_line(colour = "black") +
+  geom_point(size = 0.6) +
+  xlab("Time (ms)") +
+  ylab("Pupil size (arbitrary units)") +
+  ggtitle(sprintf("Detected blink regions (n = %d)", nrow(blink_windows))) +
+  theme_bw(base_size = 13)
+
+print(pup_noise_regions)
+```
+
+The orange bands should bracket each blink: a stretch of pupil decrease, the missing-data run, and the recovery rise.
+
+## Zooming in on one blink
+
+To see what the onset/offset refinement is doing, zoom into the first detected blink window with ±200 ms of context:
+
+```{r, warning=FALSE, message=FALSE, fig.height=4}
+focus <- blink_windows[1, ]
+window <- blinks_noise %>%
+  dplyr::filter(time >= focus$start - 200, time <= focus$end + 200)
+
+pup_zoom <- ggplot(window, aes(x = time, y = pupil)) +
+  geom_rect(data = focus,
+            aes(xmin = start, xmax = end, ymin = -Inf, ymax = Inf),
+            inherit.aes = FALSE,
+            fill = "darkorange", alpha = 0.22) +
+  geom_vline(xintercept = window$time[is.na(window$pupil)],
+             colour = "grey40", linetype = "dotted") +
+  geom_line(colour = "black") +
+  geom_point(size = 1.4) +
+  xlab("Time (ms)") +
+  ylab("Pupil size (arbitrary units)") +
+  ggtitle("Blink #1: refined window (orange) vs. missing samples (dotted)") +
+  theme_bw(base_size = 13)
+
+print(pup_zoom)
+```
+
+The dotted vertical lines mark the raw missing samples; the orange band shows the *refined* blink — the algorithm walks outward on the smoothed first-difference signal until it finds the last calm sample before the descent and the first calm sample after the recovery.
+
+## Interpolated output
+
+To match the shape of `extend_blinks()`, set pupil to `NA` inside each detected blink and interpolate:
+
+```{r, warning=FALSE, message=FALSE, fig.height=5}
+blinks_noise <- blinks_noise %>%
+  dplyr::mutate(
+    pupil_nablink = ifelse(blink > 0, NA_real_, pupil),
+    interp        = zoo::na.approx(pupil_nablink, na.rm = FALSE, rule = 2)
+  )
+
+pup_noise_interp <- ggplot(blinks_noise, aes(x = time, y = pupil)) +
+  geom_rect(data = blink_windows,
+            aes(xmin = start, xmax = end, ymin = -Inf, ymax = Inf),
+            inherit.aes = FALSE,
+            fill = "darkorange", alpha = 0.12) +
+  geom_line(colour = "grey60") +
+  geom_line(aes(y = interp), colour = "darkorange", linewidth = 0.7) +
+  xlab("Time (ms)") +
+  ylab("Pupil size (arbitrary units)") +
+  ggtitle("Noise-based detection + linear interpolation") +
+  theme_bw(base_size = 13)
+
+print(pup_noise_interp)
+```
+
+## Velocity vs. noise side by side
+
+```{r, warning=FALSE, message=FALSE, fig.height=7, fig.width=10}
+pup_velocity_panel <- pup_g3 + ggtitle("Velocity-based")
+pup_noise_panel    <- pup_noise_interp + ggtitle("Noise-based")
+plot_grid(pup_velocity_panel, pup_noise_panel, ncol = 1)
+```
+
+## Tuning
+
+Two parameters are worth knowing about:
+
+- `smooth_ms` (default 10 ms) — the centered moving-average window applied before the algorithm searches for onset / offset. Wider windows are more robust to single-sample noise but can over-smooth short blinks.
+- `gap_ms` (default 100 ms) — adjacent blinks separated by less than this are merged into a single blink. Useful for double-blinks where the eyelid only briefly re-opens.
+
+If your tracker uses a different missing-data sentinel, pass it explicitly via `missing` (e.g. `missing = -1` for a tracker that flags missing samples with `-1`).
+
+### Effect of `smooth_ms` on this trial
+
+The algorithm anchors on missing-data runs, so widening the smoother doesn't *find* additional blinks — it widens the window around each one. Below, the same trial is shown at three settings:
+
+```{r, warning=FALSE, message=FALSE, fig.height=8, fig.width=10}
+sweep_one <- function(sm) {
+  d <- interp_graph %>%
+    dplyr::mutate(blink = detect_blinks_noise(pupil, hz = 250, smooth_ms = sm))
+  windows <- d %>%
+    dplyr::filter(blink > 0) %>%
+    dplyr::group_by(blink) %>%
+    dplyr::summarise(start = min(time), end = max(time), .groups = "drop")
+  list(
+    data = d,
+    windows = windows,
+    label = sprintf("smooth_ms = %d  (%d blinks, mean width = %.0f ms)",
+                    sm, nrow(windows),
+                    if (nrow(windows)) mean(windows$end - windows$start) else 0)
+  )
+}
+
+panels <- lapply(c(10, 20, 40), sweep_one)
+
+make_panel <- function(p) {
+  ggplot(p$data, aes(x = time, y = pupil)) +
+    geom_rect(data = p$windows,
+              aes(xmin = start, xmax = end, ymin = -Inf, ymax = Inf),
+              inherit.aes = FALSE,
+              fill = "darkorange", alpha = 0.20) +
+    geom_line(colour = "black") +
+    geom_point(size = 0.5) +
+    xlab("Time (ms)") +
+    ylab("Pupil size") +
+    ggtitle(p$label) +
+    theme_bw(base_size = 12)
+}
+
+plot_grid(plotlist = lapply(panels, make_panel), ncol = 1)
+```
+
+At the default 10 ms the orange bands hug the missing-data runs tightly — you can see the eyelid descent and recovery just outside the shaded region. At 20 ms the windows widen slightly to absorb more of the descent. At 40 ms the windows roughly double in width, capturing the full eyelid trajectory before and after each missing run.
+
+Pushing the smoother to 80 ms (not shown) starts producing ~280 ms blink windows that bleed into surrounding pupil activity, so somewhere in the 20–40 ms range is the sweet spot for this recording. Pick the smallest value that produces clean interpolation downstream — wider isn't automatically better.
+
+## When detection looks "off"
+
+The noise-based detector anchors on the tracker's missing-data flag, so a blink without a corresponding NA / 0 run in the raw signal will *not* be flagged. If you eyeball the trace and see what looks like a blink but the orange band doesn't cover it, check:
+
+1. **Does the raw pupil column actually contain `NA`s or `0`s during that event?** If your tracker has already been "cleaned" (e.g. blinks filled in upstream), the noise-based method has nothing to anchor on — use `blink_velocity()` instead.
+2. **Sentinel mismatch.** Some pipelines flag missing data with `-1` or `999`. Pass `missing = -1` (etc.) so the algorithm knows what to look for.
+3. **Too-narrow `gap_ms`.** A double-blink can look like two separate detections; raise `gap_ms` to merge them.
+
+## Comparison
+
+The two detectors make different tradeoffs:
+
+- `blink_velocity()` finds blink onsets *before* the signal goes missing, useful when the tracker is slow to report zeros / `NA`s. It needs a usable threshold (sensitive to recording gain).
+- `detect_blinks_noise()` anchors on the tracker's own missing-data flag, so it works without per-recording threshold tuning, but it can miss blinks that don't produce a missing-data run.
+
+In practice it's reasonable to try both on a representative trial and pick whichever recovers the cleaner signal for your data.
 

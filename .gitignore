@@ -2,3 +2,7 @@
 .Rhistory
 .RData
 .positai
+.claude/
+gazer_*.tar.gz
+gazer.Rcheck/
+vignettes/*.html
