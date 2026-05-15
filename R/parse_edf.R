@@ -5,9 +5,8 @@
 #' cleans up the column names
 #' creates pupil column that is ambigious as to whether you sampled from left eye, right eye, or both (takes the average)
 #' For fixation data, obtains sample report and puts time in ms
-#'@import tidyverse
-#'@import data.table
-#'@import edfR
+#'@import dplyr
+#'@importFrom data.table as.data.table
 #' @param file_list directory to edf files
 #' @param output.dir directory to save new cleaned files
 #' @param type include whether you want to parse edf pupil data (pupil) or vwp (fixations)

@@ -11,7 +11,6 @@
 #' @param fillforward extend blinks forward
 #' @param hz recording frequency of ET
 #' @export
-#' @import zoo
 #' @return data frame containing pupil values where blinks have been linear interpolated.
 #'
 blink_velocity=function(df, neg_velocity_thresh=-5, pos_velocity_thresh=5, fillback=10 , fillforward=10, hz=250){

@@ -10,7 +10,6 @@
 #' @param hz recording frequency of ET
 #' @param n moving average window
 #' @export
-#' @import zoo
 #'
 #' @return df containing interpolated data
 #'

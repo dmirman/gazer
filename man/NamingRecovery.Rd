@@ -4,7 +4,8 @@
 \name{NamingRecovery}
 \alias{NamingRecovery}
 \title{Picture naming during aphasia treatment}
-\format{A data frame with 115 rows and 9 variables:
+\format{
+A data frame with 115 rows and 9 variables:
 \describe{
 \item{SubjectID}{subject ID, factor}
 \item{Diagnosis}{participant's aphasia subtype: Anomic, Conduction, or Wernicke's aphasia}
@@ -15,7 +16,8 @@
 \item{Formal.error}{proportion formal errors (cat - "mat")}
 \item{Unrelated.error}{proportion unrelated errors (cat - "log")}
 \item{Nonword.error}{proportion nonword errors (cat - "lat")}
-}}
+}
+}
 \source{
 Moss Aphasia Psycholinguistics Database <mappd.org>
 }

@@ -1,2 +1,8 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\.positai$
+^\.claude$
+^install\.R$
+^Gazer_walkthrough\.R$
+^gazer_.*\.tar\.gz$
+^gazer\.Rcheck$

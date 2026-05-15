@@ -3,13 +3,12 @@
 #' @param pd pupil column.
 #' @param order order butter filter
 #' @param filter_to_use hz to low pass filter
-#' @param samplerate
+#' @param samplerate sampling rate of the eye tracker in Hz
 #' @export
-#' @import signal
+#' @importFrom signal butter filtfilt
 #' @return vector containing low pass filtered pupil data
 
 lowpass_filter <- function(pd, order, filter_to_use, samplerate=NA){
-  require(signal)
   message("low pass filtering")
   num_NAs <- sum(is.na(pd))
     if (num_NAs < 1){

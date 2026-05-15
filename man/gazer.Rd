@@ -2,9 +2,30 @@
 % Please edit documentation in R/gazer.R
 \docType{package}
 \name{gazer}
-\alias{gazer}
 \alias{gazer-package}
+\alias{gazer}
 \title{Tools for Processing Eye Tracking Data}
 \description{
-Tools for Processing Eye Tracking Data
+Functions for reading and pre-processing eye tracking data.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{http://github.com/dmirman/gazer}
+  \item Report bugs at \url{http://github.com/dmirman/gazer/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Jason Geller \email{drjasongeller@gmail.com}
+
+Authors:
+\itemize{
+  \item Jason Geller \email{drjasongeller@gmail.com}
+  \item Dan Mirman \email{dan@danmirman.org}
+  \item Tristan Mahr \email{tristan.mahr@wisc.edu}
+  \item Matt Winn \email{mwinn83@gmail.com}
+  \item Holger Mitterer \email{holger.mitterer@um.edu.mt}
+}
+
 }

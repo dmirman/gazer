@@ -2,8 +2,9 @@
 #' if filetype is from sr renames column variables and makes them lower case
 #' Places time in ms
 #' if edf files just reads them in
-#'@import tidyverse
-#'@import vroom
+#'@import dplyr
+#'@import tibble
+#'@importFrom vroom vroom
 #' @param file_list path to .xls files
 #' @param blink_colname name of your blink colname:AVERAGE_IN_BLINK, LEFT_, #RIGHT
 #' @param pupil_colname name of your pupil colname:AVERAGE_IN_Pupil, LEFT_, #RIGHT

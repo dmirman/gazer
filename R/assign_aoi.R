@@ -3,9 +3,9 @@
 #' Takes a data frame of gaze positions (or other locations), plus screen size and aoi size (or location), and computes the area of interest (AOI) for each location. Defaults assume standard four-corner design.
 #'
 #' @param gaze data frame containing positions
-#' @param screen_size size of the screen in pixels. Defaults to c(1024, 768) and assumes reversed vertical (i.e., [0,0] is top left).
+#' @param screen_size size of the screen in pixels. Defaults to c(1024, 768) and assumes reversed vertical (i.e., (0,0) is top left).
 #' @param aoi_size size of AOIs in pixels. Defaults to a c(400, 300) width-height pair and assumes AOIs are in screen corners. AOIs will be coded numerically 1 to 4 in reading order (left to right, top to bottom), with 0 as center location.
-#' @param aoi_loc location of rectangular AOIs. Use as alternative to aoi_size for non-corner AOIs. Each AOI location should be a separate row in a data frame that has variables xmin, xmax, ymin, and ymax. Assumes reversed vertical (i.e., [0,0] is top left). AOIs will be coded numerically in row order.
+#' @param aoi_loc location of rectangular AOIs. Use as alternative to aoi_size for non-corner AOIs. Each AOI location should be a separate row in a data frame that has variables xmin, xmax, ymin, and ymax. Assumes reversed vertical (i.e., (0,0) is top left). AOIs will be coded numerically in row order.
 #' @param X name of variable containing X coordinates. Defaults to "CURRENT_FIX_X"
 #' @param Y name of variable containing Y coordinates. Defaults to "CURRENT_FIX_Y"
 #' @return Original gaze data frame with AOI column added. Non-AOI and off-screen gazes are marked NA.

@@ -28,6 +28,10 @@ remotes::install_github("dmirman/gazer")
 Please use the issues tab (https://github.com/dmirman/gazer/issues) to file any bugs or suggestions.
  
 
+# Updates (May 2026)
+
+Fixed `merge_tobii()` function to work with Titta sample and msg reports (.csv) not .h5 files. Also fixed the noise-based blink detection function (`detect_blinks_noise()`).
+
 # Updates (October 2025)
 
 Support for Pupil Labs Neon devices 

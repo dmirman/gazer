@@ -6,8 +6,7 @@
 Renames column variables and makes them lower case
 Places time in ms}
 \usage{
-merge_pupil(file_list, blink_colname = "", pupil_colname = "",
-  filetype = "sr")
+merge_pupil(file_list, blink_colname = "", pupil_colname = "", filetype = "sr")
 }
 \arguments{
 \item{file_list}{path to .xls files}

@@ -19,7 +19,7 @@
 #' }
 #'
 #' @import dplyr
-#' @import readr
+#' @importFrom readr write_csv
 process_all_subjects_PL <- function(root_dir,
                                  output_dir = file.path(root_dir, "processed"),
                                  ...) {

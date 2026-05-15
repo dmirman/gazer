@@ -1,8 +1,6 @@
 #' Take EDF files and return message events to extract behav data
 #' creates pupil column that is ambigious to whether you sampled from left eye, right eye, or both (takes the average)
-#'@import tidyverse
-#'@import data.table
-#'@import edfR
+#'@import dplyr
 #'
 #
 # Collect trial variables for your experiment. 

@@ -11,16 +11,13 @@
 #' @param time column name indicating time column (should be numeric)
 #' @param x gaze x coordinates
 #' @param y gaze y coordinates
-#' @param pupil name of pupil colum 
-
-#' @examples
-
+#' @param pupil name of pupil column
 #'
 #' @export
 #'
 #' @return A dataframe ready to use in gazer
 
-make_gazer <- function(data, subject="subject", trial="subject", time="time", x="x", y="y", pupil=NULL) {
+make_gazer <- function(data, subject="subject", trial="trial", time="time", x="x", y="y", pupil=NULL) {
 
 if (is.null(pupil)) {
 

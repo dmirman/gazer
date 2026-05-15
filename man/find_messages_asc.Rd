@@ -22,9 +22,11 @@ find_messages_asc(
 
 \item{time2extract}{a list of strings that match message texts for which only the time should be retained.}
 
+\item{msg2extract}{A list of messages to extract fully based on the first word of that message output will be string variable}
+
 \item{vars2extract}{A list of Trial variables used by Experiment Builder that should be extracted value only, with column names set by the variable name}
 
-\item{msg2extractA}{list of messages to extract fully based on the first word of that message output will be string variable}
+\item{nOfTrials}{number of trials to extract; -1 for all}
 }
 \description{
 Take asc files and return important events

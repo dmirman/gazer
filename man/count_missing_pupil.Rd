@@ -4,9 +4,11 @@
 \alias{count_missing_pupil}
 \title{Calculate percent missing data by subject and by trial}
 \usage{
-count_missing_pupil(datafile, missingthresh = 0.2)
+count_missing_pupil(datafile, pupil = "pupil", missingthresh = 0.2)
 }
 \arguments{
+\item{pupil}{name of pupil column}
+
 \item{missingthresh}{user-specified threshold for missing data. set to .2}
 }
 \value{

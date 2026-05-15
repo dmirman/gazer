@@ -4,8 +4,13 @@
 \alias{code_poly}
 \title{Build polynomial predictor variables}
 \usage{
-code_poly(df = NULL, predictor = NULL, poly.order = NULL,
-  orthogonal = TRUE, draw.poly = TRUE)
+code_poly(
+  df = NULL,
+  predictor = NULL,
+  poly.order = NULL,
+  orthogonal = TRUE,
+  draw.poly = TRUE
+)
 }
 \arguments{
 \item{df}{data frame, should not contain any variables called "predictor"}

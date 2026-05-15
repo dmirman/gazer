@@ -4,9 +4,9 @@
 #'@param dirList dir of edf files
 #'@param homeDir dir of files
 #'@param time2extract  a list of strings that match message texts for which only the time should be retained.
-#'@param msg2extractA list of messages to extract fully based on the first word of that message output will be string variable
+#'@param msg2extract A list of messages to extract fully based on the first word of that message output will be string variable
 #'@param vars2extract A list of Trial variables used by Experiment Builder that should be extracted value only, with column names set by the variable name
-#'@param nOfTrials
+#'@param nOfTrials number of trials to extract; -1 for all
 #'@export
 
 

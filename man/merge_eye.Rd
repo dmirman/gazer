@@ -7,8 +7,12 @@ if filetype is from sr renames column variables and makes them lower case
 Places time in ms
 if edf files just reads them in}
 \usage{
-merge_eye(file_list, blink_colname = "blink", pupil_colname = "pupil",
-  filetype = "sr")
+merge_eye(
+  file_list,
+  blink_colname = "blink",
+  pupil_colname = "pupil",
+  filetype = "sr"
+)
 }
 \arguments{
 \item{file_list}{path to .xls files}

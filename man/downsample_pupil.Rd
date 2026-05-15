@@ -4,12 +4,21 @@
 \alias{downsample_pupil}
 \title{Downsample pupil data}
 \usage{
-downsample_pupil(dataframe, bin.length = NULL)
+downsample_pupil(
+  dataframe,
+  bin.length = NULL,
+  timevar = "time",
+  aggvars = c("subject", "script", "timebins")
+)
 }
 \arguments{
 \item{dataframe}{dataframe}
 
 \item{bin.length}{Length of bins to average}
+
+\item{timevar}{name of time variable}
+
+\item{aggvars}{vector of variable names to group by for aggregation}
 }
 \description{
 This function will reduce the sampling fequency

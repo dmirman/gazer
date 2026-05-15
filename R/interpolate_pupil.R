@@ -5,8 +5,7 @@
 #' @param maxgap max number of NAs to interpolate. 
 #' @param hz recording frequency of ET
 #' @export
-#' @import zoo
-#' 
+#'
 #' @return data frame containing interpolated data 
 #' 
 interpolate_pupil<-function(datafile, pupil, subject, trial, extendblinks=FALSE, maxgap=Inf, type=c("linear", "cubic"), hz=NA) {

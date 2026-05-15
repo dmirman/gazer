@@ -4,13 +4,15 @@
 \name{WordLearnEx}
 \alias{WordLearnEx}
 \title{Effect of transitional probability on novel word learning}
-\format{A data frame with 560 rows and 4 variables
+\format{
+A data frame with 560 rows and 4 variables
 \describe{
 \item{Subject}{subject id, N=56}
 \item{TP}{transitional probability of words, manipulated between-subjects}
 \item{Block}{training block (1-10), each block consists of 6 trials}
 \item{Accuracy}{proportion correct responses during the block, chance = 0.5}
-}}
+}
+}
 \source{
 Partial data from Mirman et al. (2008, Cognition, 108:1, 271-280). \url{http://www.danmirman.org/pdfs/MirmanMagnusonGrafEstesDixon2008.pdf}
 }

@@ -1,19 +1,12 @@
-#' Take EDF files and return a tiblle with important behavioral events
+#' Take EDF files and return a tibble with important behavioral events
+#'
 #' Collect trial variables for your experiment.
-#' Take EDF files and return a tiblle with important behavioral events
 #'@param file_list list of edf files
 #'@param varnames a vector of variable names from experiment c("TRIALID", "ACCURACY")
-#'@param patterns a vector of patters to look for ("TRIALID", "!V TRIAL_VAR script")
-#'@import tidyverse
-#'@import data.table
-#'@import edfR
-#'@param file_list list of edf files
-#'@param varnames a vector of variable names from experiment c("TRIALID", "ACCURACY")
-#'@param patterns a vector of patters to look for ("TRIALID", "!V TRIAL_VAR script")
+#'@param patterns a vector of patterns to look for ("TRIALID", "!V TRIAL_VAR script")
 #'@param output_dir where you want files to be stored
-#'@import tidyverse
-#'@import data.table
-#'@import edfR
+#'@import dplyr
+#'@import stringr
 
 find_messages_edf <- function(file_list,varnames,patterns, output_dir)
 {

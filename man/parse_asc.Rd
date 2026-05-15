@@ -14,6 +14,8 @@ parse_asc(dirList, homeDir = "./", overwriteBlinks = FALSE, cutPreview = 0)
 \item{homeDir}{directory of edf files}
 
 \item{overwriteBlinks}{set to false}
+
+\item{cutPreview}{number of ms to cut from the start of each trial (default 0)}
 }
 \description{
 Take asc files and extract relevant data

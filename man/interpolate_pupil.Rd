@@ -4,8 +4,16 @@
 \alias{interpolate_pupil}
 \title{Turns pupil sizes with blinks NA and linearly interpolates values}
 \usage{
-interpolate_pupil(datafile, extendblinks = FALSE, maxgap = Inf,
-  type = NULL, hz = NA)
+interpolate_pupil(
+  datafile,
+  pupil,
+  subject,
+  trial,
+  extendblinks = FALSE,
+  maxgap = Inf,
+  type = c("linear", "cubic"),
+  hz = NA
+)
 }
 \arguments{
 \item{datafile}{data frame.}

@@ -4,8 +4,12 @@
 \alias{binify_fixations}
 \title{Convert fixation list into time bins}
 \usage{
-binify_fixations(gaze, binSize = 20, keepCols = c("Subject",
-  "TrialNumber", "Target", "T"), maxTime = NULL)
+binify_fixations(
+  gaze,
+  binSize = 20,
+  keepCols = c("Subject", "TrialNumber", "Target", "T"),
+  maxTime = NULL
+)
 }
 \arguments{
 \item{gaze}{a data frame of fixations, as returned by readFixationReport}

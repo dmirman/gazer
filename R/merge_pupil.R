@@ -1,8 +1,9 @@
 #' Merge pupil files from a folder
 #' Renames column variables and makes them lower case
 #' Places time in ms
-#'@import tidyverse
-#'@import data.table
+#'@import dplyr
+#'@import tibble
+#'@importFrom data.table fread
 #' @param file_list path to .xls files
 #' @param blink_colname name of your blink colname:AVERAGE_IN_BLINK, LEFT_, #RIGHT
 #' @param pupil_colname name of your pupil colname:AVERAGE_IN_Pupil, LEFT_, #RIGHT

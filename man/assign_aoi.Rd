@@ -4,17 +4,23 @@
 \alias{assign_aoi}
 \title{Assign coordinates to areas of interest}
 \usage{
-assign_aoi(gaze, screen_size = c(1024, 768), aoi_size = c(400, 300),
-  aoi_loc = NULL, X = "CURRENT_FIX_X", Y = "CURRENT_FIX_Y")
+assign_aoi(
+  gaze,
+  screen_size = c(1024, 768),
+  aoi_size = c(400, 300),
+  aoi_loc = NULL,
+  X = "CURRENT_FIX_X",
+  Y = "CURRENT_FIX_Y"
+)
 }
 \arguments{
 \item{gaze}{data frame containing positions}
 
-\item{screen_size}{size of the screen in pixels. Defaults to c(1024, 768) and assumes reversed vertical (i.e., \link{0,0} is top left).}
+\item{screen_size}{size of the screen in pixels. Defaults to c(1024, 768) and assumes reversed vertical (i.e., (0,0) is top left).}
 
 \item{aoi_size}{size of AOIs in pixels. Defaults to a c(400, 300) width-height pair and assumes AOIs are in screen corners. AOIs will be coded numerically 1 to 4 in reading order (left to right, top to bottom), with 0 as center location.}
 
-\item{aoi_loc}{location of rectangular AOIs. Use as alternative to aoi_size for non-corner AOIs. Each AOI location should be a separate row in a data frame that has variables xmin, xmax, ymin, and ymax. Assumes reversed vertical (i.e., \link{0,0} is top left). AOIs will be coded numerically in row order.}
+\item{aoi_loc}{location of rectangular AOIs. Use as alternative to aoi_size for non-corner AOIs. Each AOI location should be a separate row in a data frame that has variables xmin, xmax, ymin, and ymax. Assumes reversed vertical (i.e., (0,0) is top left). AOIs will be coded numerically in row order.}
 
 \item{X}{name of variable containing X coordinates. Defaults to "CURRENT_FIX_X"}
 

@@ -4,14 +4,16 @@
 \name{FunctTheme}
 \alias{FunctTheme}
 \title{Fixation of semantically related objects during spoken word comprehension}
-\format{A data frame with 1530 rows and 5 variables:
+\format{
+A data frame with 1530 rows and 5 variables:
 \describe{
 \item{Subject}{subject ID, factor}
 \item{Time}{time (in ms) since word onset in 50ms bins}
 \item{meanFix}{fixation proportion (subject mean): proportion of correct-response trials on which the object was fixated}
 \item{Condition}{semantic relatedness condition: Function (e.g., broom - sponge) or Thematic (e.g., broom - dustpan)}
 \item{Object}{object type: Target, semantically related Competitor, or Unrelated}
-}}
+}
+}
 \source{
 Kalenine et al. (2012, J. Exp. Psychol. Learn. Mem. Cog., 38:5, 1274-1295) \url{http://www.danmirman.org/pdfs/Kalenine_etal2012.pdf}
 }

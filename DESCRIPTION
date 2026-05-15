@@ -1,31 +1,40 @@
 Package: gazer
 Type: Package
 Title: Tools for Processing Eye Tracking Data
-Version: 0.1
-Date: 2018-07-05
+Version: 0.1.1
+Date: 2026-05-15
 Authors@R: c(
-  person("Jason", "Geller", email = "drjasongeller@gmail.edu", role = c("aut", "cre")), 
-  person("Dan", "Mirman", email = "dan@danmirman.org", role = c("aut", "cre")),
-  person("Tristan", "Mahr", email = "tristan.mahr@wisc.edu", role = c("aut", "cre")),
-  person("Matt", "Winn", email = "mwinn83@gmail.com", role = c("aut", "cre")),
-  person("Holger", "Mitterer", email = "holger.mitterer@um.edu.mt", role = c("aut")))
-Author: Jason Geller
-Maintainer: Jason Geller <jason-geller@uiowa.edu>
+  person("Jason", "Geller", email = "drjasongeller@gmail.com", role = c("aut", "cre")),
+  person("Dan", "Mirman", email = "dan@danmirman.org", role = "aut"),
+  person("Tristan", "Mahr", email = "tristan.mahr@wisc.edu", role = "aut"),
+  person("Matt", "Winn", email = "mwinn83@gmail.com", role = "aut"),
+  person("Holger", "Mitterer", email = "holger.mitterer@um.edu.mt", role = "aut"))
 Description: Functions for reading and pre-processing eye tracking data.
 URL: http://github.com/dmirman/gazer
 BugReports: http://github.com/dmirman/gazer/issues
 License: GPL-3
-depends: R (>= 4.1.0)
+Depends: R (>= 4.1.0)
 LazyData: true
 Imports:
-   ggplot2, 
-    tidyverse, 
-    lme4, 
-    data.table
-Remotes: tmalsburg/saccades/saccades
-RoxygenNote: 7.3.2
-Suggests: knitr,
+    data.table,
+    dplyr,
+    ggplot2,
+    lme4,
+    purrr,
+    readr,
+    saccades,
+    signal,
+    stringr,
+    tibble,
+    tidyr,
+    vroom,
+    zoo
+Suggests:
+    knitr,
     rmarkdown
+Remotes:
+    tmalsburg/saccades/saccades
 VignetteBuilder: knitr
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
+Config/roxygen2/version: 8.0.0

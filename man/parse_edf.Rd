@@ -3,28 +3,28 @@
 \name{parse_edf}
 \alias{parse_edf}
 \title{Take EDF files and return data that is in format usable for gazeR
-for pupil merges the samples data
+for pupil merges the sample data with the message data (merges on nearest values (millisecond diff between SR and this function)
 puts time in ms
 adds subject variable column
 cleans up the column names
 creates pupil column that is ambigious as to whether you sampled from left eye, right eye, or both (takes the average)
-For fixation data, obtains sample report, puts time in ms}
+For fixation data, obtains sample report and puts time in ms}
 \usage{
-parse_edf(file_list, output.dir, type = "pupil")
+parse_edf(file_list, output_dir, type = "pupil")
 }
 \arguments{
 \item{file_list}{directory to edf files}
 
-\item{output.dir}{directory to save new cleaned files}
-
 \item{type}{include whether you want to parse edf pupil data (pupil) or vwp (fixations)}
+
+\item{output.dir}{directory to save new cleaned files}
 }
 \description{
 Take EDF files and return data that is in format usable for gazeR
-for pupil merges the samples data
+for pupil merges the sample data with the message data (merges on nearest values (millisecond diff between SR and this function)
 puts time in ms
 adds subject variable column
 cleans up the column names
 creates pupil column that is ambigious as to whether you sampled from left eye, right eye, or both (takes the average)
-For fixation data, obtains sample report, puts time in ms
+For fixation data, obtains sample report and puts time in ms
 }

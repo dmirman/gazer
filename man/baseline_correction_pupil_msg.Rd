@@ -4,9 +4,13 @@
 \alias{baseline_correction_pupil_msg}
 \title{Performs linear (sub) or divisive baseline correction relative to desired stim_onset and off_set with messages.}
 \usage{
-baseline_correction_pupil_msg(datafile, pupil_colname = NULL,
-  baseline_dur = 500, event_offset = "event_offset",
-  baseline_method = "sub")
+baseline_correction_pupil_msg(
+  datafile,
+  pupil_colname = NULL,
+  baseline_dur = 500,
+  event = "event",
+  baseline_method = "sub"
+)
 }
 \arguments{
 \item{datafile}{raw pupil data}
@@ -15,9 +19,11 @@ baseline_correction_pupil_msg(datafile, pupil_colname = NULL,
 
 \item{baseline_dur}{duration of baseline period from stim offset}
 
-\item{event_offset}{message name for stim onset}
+\item{event}{message name for stim onset}
 
 \item{baseline_method}{correction method. Default is sub but can also include divisive}
+
+\item{message}{name of message column}
 }
 \value{
 data frame containing baseline corrected data from event of interest

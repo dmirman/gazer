@@ -12,6 +12,8 @@ lowpass_filter(pd, order, filter_to_use, samplerate = NA)
 \item{order}{order butter filter}
 
 \item{filter_to_use}{hz to low pass filter}
+
+\item{samplerate}{sampling rate of the eye tracker in Hz}
 }
 \value{
 vector containing low pass filtered pupil data

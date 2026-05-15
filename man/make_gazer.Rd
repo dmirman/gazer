@@ -4,8 +4,15 @@
 \alias{make_gazer}
 \title{Prepare data for pre-processing in Gazer}
 \usage{
-make_gazer(data, subject = "subject", trial = "subject",
-  time = "time", x = "x", y = "y", pupil = NULL)
+make_gazer(
+  data,
+  subject = "subject",
+  trial = "trial",
+  time = "time",
+  x = "x",
+  y = "y",
+  pupil = NULL
+)
 }
 \arguments{
 \item{data}{a raw, long form dataframe organised by subject, trial, and time.}
@@ -20,7 +27,7 @@ make_gazer(data, subject = "subject", trial = "subject",
 
 \item{y}{gaze y coordinates}
 
-\item{pupil}{name of pupil colum}
+\item{pupil}{name of pupil column}
 }
 \value{
 A dataframe ready to use in gazer
@@ -30,7 +37,4 @@ This will make sure your data is in the right format for processing.
 This package is designed to deal with data at it comes out of the eyetracker
 in a long-form csv style format. Thus data input here would be a long
 dataframe, wherein each row is a single frame collected by the eyetracker.
-}
-\examples{
-
 }

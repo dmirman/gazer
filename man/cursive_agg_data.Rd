@@ -4,13 +4,15 @@
 \name{cursive_agg_data}
 \alias{cursive_agg_data}
 \title{Judgments to cursive vs. type-print words in LDT}
-\format{A data frame with 52 rows and 3 variables
+\format{
+A data frame with 52 rows and 3 variables
 \describe{
 \item{script}{Cursive or Print}
 \item{timebins}{trial onset}
 \item{aggbaseline}{baseline corrected pupil size}
 
-}}
+}
+}
 \usage{
 cursive_agg_data
 }

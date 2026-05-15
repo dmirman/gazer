@@ -4,7 +4,7 @@
 #' @param dirList list if asc files
 #' @param homeDir directory of edf files
 #' @param overwriteBlinks set to false
-#' @param cutPreview
+#' @param cutPreview number of ms to cut from the start of each trial (default 0)
 #' @export
 
 parse_asc <- function(dirList, homeDir = "./", overwriteBlinks = FALSE, cutPreview = 0) {

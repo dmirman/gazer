@@ -2,12 +2,6 @@
 #'
 #' @name gazer
 #' @docType package
-#' @import stats
-#' @import plyr
 #' @import ggplot2
-#' @import reshape2
-NULL
-
-# Temporary place to house require statements. The final package should not use
-# these, since the NAMESPACE directives handle relationships to other packages.
-require("pbkrtest")
+#' @importFrom stats aggregate approx coef coefficients median na.omit pnorm poly pt sd spline t.test
+"_PACKAGE"

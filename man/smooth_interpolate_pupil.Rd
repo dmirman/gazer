@@ -4,10 +4,18 @@
 \alias{smooth_interpolate_pupil}
 \title{Smooths the pupil trace before linear or cubic interpolation.}
 \usage{
-smooth_interpolate_pupil(datafile, pupil = "pupil",
-  extendpupil = "extendpupil", extendblinks = FALSE,
-  step.first = "smooth", filter = "moving", maxgap = Inf,
-  type = NULL, hz = NA, n = NA)
+smooth_interpolate_pupil(
+  datafile,
+  pupil = "pupil",
+  extendpupil = "extendpupil",
+  extendblinks = FALSE,
+  step.first = "smooth",
+  filter = "moving",
+  maxgap = Inf,
+  type = NULL,
+  hz = NA,
+  n = NA
+)
 }
 \arguments{
 \item{datafile}{data frame.}

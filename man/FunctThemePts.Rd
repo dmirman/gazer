@@ -4,7 +4,8 @@
 \name{FunctThemePts}
 \alias{FunctThemePts}
 \title{Fixation of semantically related objects during spoken word comprehension by participants with left hemisphere stroke}
-\format{A data frame with 8199 rows and 8 variables:
+\format{
+A data frame with 8199 rows and 8 variables:
 \describe{
 \item{Subject}{subject ID, factor}
 \item{Condition}{semantic relatedness condition: Function (e.g., broom - sponge) or Thematic (e.g., broom - dustpan)}
@@ -14,7 +15,8 @@
 \item{meanFix}{fixation proportion (subject mean): proportion of correct-response trials on which the object was fixated}
 \item{sumFix}{fixation sum: number of correct-response trials on which the object was fixated (i.e., numerator for meanFix)}
 \item{N}{number of correct-response trials (i.e., denominator for meanFix)}
-}}
+}
+}
 \source{
 Kalenine, Mirman, & Buxbaum (2012, Front. Hum. Neurosci., 6:106, 1-12) \url{http://journal.frontiersin.org/Journal/10.3389/fnhum.2012.00106}
 }
