@@ -1,0 +1,16 @@
+system_time_stamp,msg
+2522825781,Calibration_start
+2522831237,calibration point 0 at position -768.0 -432.0
+2524713019,calibration point 1 at position -768.0 432.0
+2526848521,calibration point 2 at position 768.0 432.0
+2529017030,calibration point 3 at position 0.0 -0.0
+2531653120,calibration point 4 at position 768.0 -432.0
+2533561750,Calibration_stop
+2533571913,Validation_start
+2534055312,validation point 0 at position 576.0000000000001 -0.0
+2535523738,validation point 1 at position -576.0 -0.0
+2536991914,validation point 2 at position 0.0 -324.00000000000006
+2538460063,validation point 3 at position 0.0 324.0
+2539449122,Validation_end
+2943202906,onset_sandybeach.beachtoys.neu.right.jpeg
+2948238716,offset_sandybeach.beachtoys.neu.right.jpeg

@@ -157,14 +157,14 @@ detect_blinks_noise <- function(pupil, hz,
     refined_offset[k] <- offset_idx - 1L
   }
 
-  # Collapse adjacent pairs created by gap-merge (offset[k] == onset[k+1]).
+  # Merge adjacent pairs created by gap-merge (offset[k] == onset[k+1]) into a
+  # single window by extending blink k+1's onset back to blink k's onset.
   if (length(refined_onset) >= 2L) {
     keep <- rep(TRUE, length(refined_onset))
     for (k in seq_len(length(refined_onset) - 1L)) {
-      if (keep[k] && keep[k + 1L] &&
-          refined_offset[k] == refined_onset[k + 1L]) {
-        keep[k]      <- FALSE
-        keep[k + 1L] <- FALSE
+      if (keep[k] && refined_offset[k] == refined_onset[k + 1L]) {
+        refined_onset[k + 1L] <- refined_onset[k]
+        keep[k] <- FALSE
       }
     }
     refined_onset  <- refined_onset[keep]

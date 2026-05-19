@@ -161,7 +161,23 @@ The velocity-based detector above works well when blinks produce a clean drop / 
 
 `detect_blinks_noise()` is tracker-agnostic: by default it treats both `0` and `NA` as missing, so the same call works for Tobii and EyeLink-style exports without configuration.
 
-It composes with `dplyr` the same way as `extend_blinks()` — call it inside `mutate()` under a `group_by()` so blink IDs restart per trial:
+Before running detection, NA out samples whose pupil velocity exceeds what a real pupil can physically produce. `speed_pupil()` computes a per-sample dilation speed and `calc_mad()` derives a robust threshold (Kret & Sjak-Shie, 2019). Marking these high-velocity samples as missing *before* detection makes the eyelid descent / recovery part of each missing-data run, so the detector's onset/offset refinement has clean boundaries to anchor on.
+
+```{r, warning=FALSE, message=FALSE}
+interp_graph <- interp_graph %>%
+  dplyr::group_by(subject, trial) %>%
+  dplyr::mutate(speed = speed_pupil(pupil, time)) %>%
+  dplyr::ungroup()
+
+thr <- calc_mad(interp_graph$speed[!is.na(interp_graph$speed) &
+                                   is.finite(interp_graph$speed)], n = 16)
+
+interp_graph <- interp_graph %>%
+  dplyr::mutate(pupil = ifelse(!is.na(speed) & is.finite(speed) & speed > thr,
+                               NA_real_, pupil))
+```
+
+Now run `detect_blinks_noise()`. It composes with `dplyr` the same way as `extend_blinks()` — call it inside `mutate()` under a `group_by()` so blink IDs restart per trial:
 
 ```{r, warning=FALSE, message=FALSE}
 blinks_noise <- interp_graph %>%
@@ -241,15 +257,18 @@ The dotted vertical lines mark the raw missing samples; the orange band shows th
 
 ## Interpolated output
 
-To match the shape of `extend_blinks()`, set pupil to `NA` inside each detected blink and interpolate:
+To interpolate across the detected blinks, route the data through gazeR's `interpolate_pupil()`. The function expects a binary `blink` column (`blink == 1` inside blinks), so binarize the integer IDs from `detect_blinks_noise()` first. The interpolated values land in a new `interp` column.
 
 ```{r, warning=FALSE, message=FALSE, fig.height=5}
 blinks_noise <- blinks_noise %>%
-  dplyr::mutate(
-    pupil_nablink = ifelse(blink > 0, NA_real_, pupil),
-    interp        = zoo::na.approx(pupil_nablink, na.rm = FALSE, rule = 2)
-  )
+  dplyr::mutate(blink = as.integer(blink > 0)) %>%
+  interpolate_pupil(pupil = "pupil", subject = "subject", trial = "trial",
+                    extendblinks = FALSE, type = "linear", hz = 250)
+```
 
+Now plot the interpolated signal over the raw trace:
+
+```{r, warning=FALSE, message=FALSE, fig.height=5}
 pup_noise_interp <- ggplot(blinks_noise, aes(x = time, y = pupil)) +
   geom_rect(data = blink_windows,
             aes(xmin = start, xmax = end, ymin = -Inf, ymax = Inf),
@@ -259,7 +278,7 @@ pup_noise_interp <- ggplot(blinks_noise, aes(x = time, y = pupil)) +
   geom_line(aes(y = interp), colour = "darkorange", linewidth = 0.7) +
   xlab("Time (ms)") +
   ylab("Pupil size (arbitrary units)") +
-  ggtitle("Noise-based detection + linear interpolation") +
+  ggtitle("Speed-filtered + noise-based detection + interpolation") +
   theme_bw(base_size = 13)
 
 print(pup_noise_interp)
@@ -342,4 +361,78 @@ The two detectors make different tradeoffs:
 - `detect_blinks_noise()` anchors on the tracker's own missing-data flag, so it works without per-recording threshold tuning, but it can miss blinks that don't produce a missing-data run.
 
 In practice it's reasonable to try both on a representative trial and pick whichever recovers the cleaner signal for your data.
+
+# Worked example: Tobii Titta data + noise-based detection
+
+The walkthrough above used a 250 Hz EyeLink recording. To show the noise-based detector end-to-end on a different tracker, the package also ships one trimmed trial recorded with a Tobii spectrum at 120 Hz, captured via the Python `Titta` package. The gaze and message CSVs live in `inst/extdata/titta_gaze/` and `inst/extdata/titta_msg/` (paired by basename).
+
+`merge_tobii_titta()` reads the two folders, attaches each message to the nearest gaze sample, assigns trials from the `onset_` / `offset_` markers, and rebases time to be trial-relative in ms.
+
+```{r, warning=FALSE, message=FALSE}
+gaze_dir <- system.file("extdata", "titta_gaze", package = "gazer")
+msg_dir  <- system.file("extdata", "titta_msg",  package = "gazer")
+
+titta_raw <- merge_tobii_titta(gaze = gaze_dir, msg = msg_dir)
+```
+
+Tobii reports left and right eyes separately. Average them with `compute_monocular_mean()` (which returns `NA` only when both eyes are missing), then run the result through `make_gazer()` so the standard `subject` / `trial` / `time` / `x` / `y` / `pupil` columns end up at the front of the data frame:
+
+```{r, warning=FALSE, message=FALSE}
+titta <- titta_raw %>%
+  mutate(
+    pupil = compute_monocular_mean(left_pupil_diameter, right_pupil_diameter),
+    x     = compute_monocular_mean(left_gaze_point_on_display_area_x,
+                                   right_gaze_point_on_display_area_x),
+    y     = compute_monocular_mean(left_gaze_point_on_display_area_y,
+                                   right_gaze_point_on_display_area_y)
+  ) %>%
+  make_gazer(subject = "subject", trial = "trial", time = "time",
+             x = "x", y = "y", pupil = "pupil")
+
+head(titta[, c("subject", "trial", "time", "x", "y", "pupil")])
+```
+
+From here, the rest of the pipeline is identical to the EyeLink walkthrough above — only `hz = 120` differs. Apply the speed filter, run `detect_blinks_noise()`, then `interpolate_pupil()`:
+
+```{r, warning=FALSE, message=FALSE}
+# 1. speed_pupil + MAD filter
+titta <- titta %>%
+  dplyr::group_by(subject, trial) %>%
+  dplyr::mutate(speed = speed_pupil(pupil, time)) %>%
+  dplyr::ungroup()
+thr <- calc_mad(titta$speed[!is.na(titta$speed) & is.finite(titta$speed)], n = 16)
+titta <- titta %>%
+  dplyr::mutate(pupil = ifelse(!is.na(speed) & is.finite(speed) & speed > thr,
+                               NA_real_, pupil))
+
+# 2. detect blinks + 3. interpolate
+titta <- titta %>%
+  dplyr::group_by(subject, trial) %>%
+  dplyr::mutate(blink = as.integer(detect_blinks_noise(pupil, hz = 120) > 0)) %>%
+  dplyr::ungroup() %>%
+  interpolate_pupil(pupil = "pupil", subject = "subject", trial = "trial",
+                    extendblinks = FALSE, type = "linear", hz = 120)
+```
+
+```{r, warning=FALSE, message=FALSE, fig.height=5}
+titta_windows <- titta %>%
+  dplyr::filter(blink > 0) %>%
+  dplyr::mutate(grp = cumsum(c(1, diff(time) > 1000 / 120 + 1))) %>%
+  dplyr::group_by(grp) %>%
+  dplyr::summarise(start = min(time), end = max(time), .groups = "drop")
+
+ggplot(titta, aes(x = time, y = pupil)) +
+  geom_rect(data = titta_windows,
+            aes(xmin = start, xmax = end, ymin = -Inf, ymax = Inf),
+            inherit.aes = FALSE,
+            fill = "darkorange", alpha = 0.12) +
+  geom_line(colour = "grey60") +
+  geom_line(aes(y = interp), colour = "darkorange", linewidth = 0.7) +
+  xlab("Time (ms)") +
+  ylab("Pupil size (mm)") +
+  ggtitle("Titta trial: speed filter + noise-based detection + interpolation") +
+  theme_bw(base_size = 13)
+```
+
+The same `detect_blinks_noise()` call worked on both trackers without changing the algorithm — only `hz` differed (250 for EyeLink, 120 for Tobii).
 
