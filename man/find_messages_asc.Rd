@@ -12,7 +12,8 @@ find_messages_asc(
   time2extract = NULL,
   msg2extract = NULL,
   vars2extract = NULL,
-  nOfTrials = -1
+  nOfTrials = -1,
+  binocular = FALSE
 )
 }
 \arguments{
@@ -27,6 +28,10 @@ find_messages_asc(
 \item{vars2extract}{A list of Trial variables used by Experiment Builder that should be extracted value only, with column names set by the variable name}
 
 \item{nOfTrials}{number of trials to extract; -1 for all}
+
+\item{binocular}{set to TRUE when the recording is binocular. Message
+extraction is eye-independent, so this only keeps the interface symmetric
+with \code{\link{parse_asc}}; the extracted output is identical either way.}
 }
 \description{
 Take asc files and return important events

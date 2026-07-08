@@ -6,7 +6,13 @@
 Does not merge data with messages for fixation data, obtains sample report and puts time in ms
 This code was written by Dr. Holger Mitterer}
 \usage{
-parse_asc(dirList, homeDir = "./", overwriteBlinks = FALSE, cutPreview = 0)
+parse_asc(
+  dirList,
+  homeDir = "./",
+  overwriteBlinks = FALSE,
+  cutPreview = 0,
+  binocular = FALSE
+)
 }
 \arguments{
 \item{dirList}{list if asc files}
@@ -16,6 +22,10 @@ parse_asc(dirList, homeDir = "./", overwriteBlinks = FALSE, cutPreview = 0)
 \item{overwriteBlinks}{set to false}
 
 \item{cutPreview}{number of ms to cut from the start of each trial (default 0)}
+
+\item{binocular}{set to TRUE to return both left and right eye samples
+(x/y/pupil for each eye plus per-eye blink flags); FALSE (default) returns
+a single (monocular) eye.}
 }
 \description{
 Take asc files and extract relevant data

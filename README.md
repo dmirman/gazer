@@ -1,6 +1,6 @@
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/dmirman/gazer/master?urlpath=rstudio)
 [![Open in Code Ocean](https://codeocean.com/codeocean-assets/badge/open-in-code-ocean.svg)](https://codeocean.com/capsule/4600160/tree/v1)
-gazeR 0.2.3
+gazeR 0.2.4
 
 
 # gazeR:A package to analyze gaze position and pupil size data
@@ -27,6 +27,10 @@ remotes::install_github("dmirman/gazer")
   
 Please use the issues tab (https://github.com/dmirman/gazer/issues) to file any bugs or suggestions.
  
+
+# Updates (July 2026)
+
+Added binocular support to the ASC workflow. `parse_asc()` now takes a `binocular` argument: when `TRUE` it returns separate x/y/pupil columns for the left and right eye plus per-eye blink flags (`x_left, y_left, pupil_left, x_right, y_right, pupil_right, blink_left, blink_right`); when `FALSE` (default) it keeps the original monocular output. `find_messages_asc()` gained a matching `binocular` argument for interface symmetry (message extraction is eye-independent). The parsed eye-data file is now written as `INPUTFILE_eye.csv` (previously `_vwp.csv`). See the ASC vignette for a binocular example.
 
 # Updates (May 2026)
 

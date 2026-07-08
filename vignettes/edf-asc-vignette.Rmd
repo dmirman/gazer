@@ -23,7 +23,7 @@ The gazeR package relied on the edfR package for data from SR Research Eyetracke
 
 Therefore, the current functions emulate the workings of these functions using the *.asc files that can be generated from edf files using either the visual EDF2ASC tool that is distributed with each SR tracker or the command line version of EDF2ASC.
 
-At this stage, the files are only available for the visual-world-paradigm branch of the gazeR package. Send me a feature request if you require a version for pupilometry.
+These functions handle both visual-world-paradigm (gaze) and pupillometry data, and support monocular as well as binocular recordings (see the binocular option below).
 
 # EDF to ASC conversion
 
@@ -93,13 +93,28 @@ parse_asc(myDirList, homeDir = "C:/Users/JG1890/Documents/gazer/" ,
           overwriteBlinks = F, cutPreview = 1500)
 
 ```
+
+## Binocular recordings
+
+By default `parse_asc` returns a single (monocular) eye with the columns `time, trial, ID, subject, pupil, x, y`. If your recording tracked **both** eyes, set `binocular = TRUE`. The output then contains separate x/y/pupil columns for each eye plus a per-eye blink flag (0/1):
+
+`time, trial, ID, subject, x_left, y_left, pupil_left, x_right, y_right, pupil_right, blink_left, blink_right`
+
+The blink flags are derived from the `SBLINK`/`EBLINK` events in the asc file and mark, sample by sample, whether each eye was mid-blink.
+
+```{r, eval=FALSE}
+
+parse_asc(myDirList, homeDir = "C:/Users/JG1890/Documents/gazer/",
+          overwriteBlinks = F, cutPreview = 1500, binocular = TRUE)
+
+```
 This function will take quite long to complete. However, it will feed back whenever it has finished processing a trial from a given participants (which may take around 1s, depending on sample size and the machine the program is run on). That is, for a study with 40 participants and 160 trials, this may well take more than 100 minutes.
 
-The function generates three files in the home directory: 
+The function generates three files in the home directory:
 
-1. INPUTFILE_vwp.csv containing the eye-tracking data
+1. INPUTFILE_eye.csv containing the eye-tracking data
 2. overview_INPUTFILE.txt containing an overview of the messages in the asc file
-3. VAR_overview_INPUTFILE.txt containing an overview of the TRIAL_VARIABLES that have been put out while running the experiment. 
+3. VAR_overview_INPUTFILE.txt containing an overview of the TRIAL_VARIABLES that have been put out while running the experiment.
 
 # Extraction of messages
 The next step is to extract information about the trials from the messages. This will be specific to each study, but the overview files should help to remind the user of how the experiment was set up.
