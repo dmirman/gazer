@@ -4,17 +4,15 @@
 #' if edf files just reads them in
 #'@import dplyr
 #'@import tibble
-#'@importFrom vroom vroom
+#'@importFrom data.table fread
 #' @param file_list path to .xls files
 #' @param blink_colname name of your blink colname:AVERAGE_IN_BLINK, LEFT_, #RIGHT
 #' @param pupil_colname name of your pupil colname:AVERAGE_IN_Pupil, LEFT_, #RIGHT
 #' @param filetype if reading raw edf file use 'edf' if using sr files use type 'sr'
 #' @export
 #' @return data frame containing pupil data
-merge_gazer_files <- function (file_list, blink_colname="blink", pupil_colname="pupil", filetype="sr") {  
-  #file list is path to .xls files
-  #vroom is faster
-  library(data.table)
+merge_gazer_files <- function (file_list, blink_colname="blink", pupil_colname="pupil", filetype="sr") {
+  #file_list is a vector of paths to the exported eye-tracking files
 
   if (filetype=="sr") {
     
@@ -26,7 +24,7 @@ merge_gazer_files <- function (file_list, blink_colname="blink", pupil_colname="
       }
     }
   
-    fread(files, header=TRUE, sep="\t", na.strings = ".", fill=TRUE)})) #vroom makes reading in files quick
+    fread(files, header=TRUE, sep="\t", na.strings = ".", fill=TRUE)})) #fread makes reading in files quick
   
   change_name <- dataset %>% 
     dplyr::select(!!quo_name("subject"):= RECORDING_SESSION_LABEL,
@@ -53,7 +51,7 @@ if (filetype=="edf") {
       }
     }
     
-    fread(files, header=TRUE, na.strings = "NA", fill=TRUE)})) #vroom makes reading in files quicke
+    fread(files, header=TRUE, na.strings = "NA", fill=TRUE)})) #fread makes reading in files quick
 
    return(as_tibble(dataset))
   }

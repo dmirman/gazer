@@ -27,7 +27,6 @@ Imports:
     stringr,
     tibble,
     tidyr,
-    vroom,
     zoo
 Suggests:
     knitr,
