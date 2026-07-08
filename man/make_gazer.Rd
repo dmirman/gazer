@@ -23,11 +23,13 @@ make_gazer(
 
 \item{time}{column name indicating time column (should be numeric)}
 
-\item{x}{gaze x coordinates}
+\item{x}{gaze x column(s). One name is renamed to \code{x}; several (e.g.
+\code{c("x_left", "x_right")}) keep their names. Use \code{NULL} if there is no gaze.}
 
-\item{y}{gaze y coordinates}
+\item{y}{gaze y column(s); see \code{x}.}
 
-\item{pupil}{name of pupil column}
+\item{pupil}{pupil column(s). One name is renamed to \code{pupil}; several (e.g.
+\code{c("pupil_left", "pupil_right")}) keep their names. \code{NULL} (default) if none.}
 }
 \value{
 A dataframe ready to use in gazer
@@ -37,4 +39,10 @@ This will make sure your data is in the right format for processing.
 This package is designed to deal with data at it comes out of the eyetracker
 in a long-form csv style format. Thus data input here would be a long
 dataframe, wherein each row is a single frame collected by the eyetracker.
+
+\code{x}, \code{y}, and \code{pupil} may each name a single column or several. A single
+column is renamed to gazeR's canonical name (\code{x}, \code{y}, or \code{pupil}); when you
+pass more than one column (e.g. left and right eye) the original column names
+are kept as-is. Either way the selected columns are moved to the front of the
+data frame and every other column is kept, in its original order, after them.
 }
