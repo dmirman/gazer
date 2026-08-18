@@ -13,7 +13,7 @@ merge_asc_files <- function(dirList, homeDir = "./")
   notMerged  = 0
   for (myDir in dirList)
   {
-    myEyeFile = paste0(homeDir, myDir, "/", myDir, "_vwp.csv")
+    myEyeFile = paste0(homeDir, myDir, "/", myDir, "_eye.csv")
     myMsgFile = paste0(homeDir, myDir, "/", myDir, "_messages.csv")
     eyeOK = file.exists(myEyeFile)
     msgOK = file.exists(myMsgFile)
@@ -22,7 +22,7 @@ merge_asc_files <- function(dirList, homeDir = "./")
       eyeData = fread(myEyeFile)
       msgData = fread(myMsgFile)
       combined = merge(eyeData, msgData, by = "trial")
-      myOutFile = gsub("_vwp.csv","_combined.csv",myEyeFile)
+      myOutFile = gsub("_eye.csv","_combined.csv",myEyeFile)
       data.table::fwrite(combined, myOutFile)
       merged = merged + 1
     }else{
