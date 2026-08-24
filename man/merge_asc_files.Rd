@@ -3,18 +3,25 @@
 \name{merge_asc_files}
 \alias{merge_asc_files}
 \title{Take asc files and extract relevant data
-Does not merge data with messages for fixation data, obtains sample report and puts time in ms
+Merges eye data (from parse_asc) with message data (from find_messages_asc)
 This code was written by Dr. Holger Mitterer}
 \usage{
-merge_asc_files(dirList, homeDir = "./")
+merge_asc_files(dirList, homeDir = "./", dataType = c("fixation", "sample"))
 }
 \arguments{
 \item{dirList}{list if asc files}
 
 \item{homeDir}{directory of edf files}
+
+\item{dataType}{type of eye data being merged. "fixation" (default) merges
+eye and message data by trial only, matching every message row for a
+trial to every eye row for that trial. "sample" merges by trial and time
+so that per-sample eye rows line up with message rows at matching
+timestamps (requires \code{_messages.csv} to have a \code{time} column,
+i.e. \code{find_messages_asc} was called with \code{time2extract}).}
 }
 \description{
 Take asc files and extract relevant data
-Does not merge data with messages for fixation data, obtains sample report and puts time in ms
+Merges eye data (from parse_asc) with message data (from find_messages_asc)
 This code was written by Dr. Holger Mitterer
 }

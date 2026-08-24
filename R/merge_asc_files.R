@@ -1,14 +1,22 @@
 #' Take asc files and extract relevant data
-#' Does not merge data with messages for fixation data, obtains sample report and puts time in ms
+#' Merges eye data (from parse_asc) with message data (from find_messages_asc)
 #' This code was written by Dr. Holger Mitterer
 #' @param dirList list if asc files
 #' @param homeDir directory of edf files
+#' @param dataType type of eye data being merged. "fixation" (default) merges
+#'   eye and message data by trial only, matching every message row for a
+#'   trial to every eye row for that trial. "sample" merges by trial and time
+#'   so that per-sample eye rows line up with message rows at matching
+#'   timestamps (requires \code{_messages.csv} to have a \code{time} column,
+#'   i.e. \code{find_messages_asc} was called with \code{time2extract}).
 #' @export
 
 
-merge_asc_files <- function(dirList, homeDir = "./")
+merge_asc_files <- function(dirList, homeDir = "./", dataType = c("fixation", "sample"))
 {
   library(data.table)
+  dataType <- match.arg(dataType)
+  mergeBy <- if (dataType == "sample") c("trial", "time") else "trial"
   merged = 0
   notMerged  = 0
   for (myDir in dirList)
@@ -21,7 +29,13 @@ merge_asc_files <- function(dirList, homeDir = "./")
       cat("\n merging files for", myDir)
       eyeData = fread(myEyeFile)
       msgData = fread(myMsgFile)
-      combined = merge(eyeData, msgData, by = "trial")
+      missingCols = setdiff(mergeBy, intersect(names(eyeData), names(msgData)))
+      if (length(missingCols) > 0) {
+        stop("Cannot merge by ", paste(mergeBy, collapse = ", "), " for ", myDir,
+             ": missing column(s) ", paste(missingCols, collapse = ", "),
+             " in eye or message data.")
+      }
+      combined = merge(eyeData, msgData, by = mergeBy)
       myOutFile = gsub("_eye.csv","_combined.csv",myEyeFile)
       data.table::fwrite(combined, myOutFile)
       merged = merged + 1
