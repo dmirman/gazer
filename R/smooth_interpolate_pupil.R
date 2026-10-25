@@ -359,7 +359,7 @@ smooth_interpolate_pupil<-function(datafile, pupil="pupil", extendpupil="extendp
     message("Smoothing the pupil trace with Hann window")
 
     smooth_pupil <- as.data.frame(pupil_interp) %>%
-      dplyr::mutate(pup_interp = hanning_filter(extendpupil, degree=11))
+      dplyr::mutate(pup_interp = hanning_filter(interp, degree=11))
 
     return(smooth_pupil)
   }
