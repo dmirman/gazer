@@ -1,4 +1,15 @@
-# gazer (development version)
+# gazer 0.2.6
+
+* `upsample_gaze()` fixes:
+  - It failed unless purrr was attached (`map_dfr()` wasn't imported).
+  - It filled *every* missing value downward in all non-pupil/gaze
+    columns, including the original rows, so a sparse `message` column was
+    copied onto every following sample (one participant's 84 event messages
+    became 162,497). Original rows are now returned unchanged. Inserted rows
+    copy metadata from the previous original sample, but event columns
+    (new `event_cols` argument, default `"message"`) stay empty.
+  - `up_sampled` is now `TRUE` only for inserted rows (it was `TRUE` for all
+    rows).
 
 * The ASC vignette has a new section on `read_asc()` (reading files, trial
   variables and messages, binocular options, several participants, sampling

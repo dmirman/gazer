@@ -3,19 +3,29 @@
 #' Increase the sampling frequency to `target_hz` Hz by inserting additional rows.
 #' Missing values in gaze and pupil data will be preserved for later interpolation.
 #'
+#' Original rows are returned unchanged. Each inserted row takes its other
+#' columns (e.g. condition, trial variables) from the original sample before
+#' it, except `pupil_cols`/`gaze_cols` (left `NA` for interpolation) and
+#' `event_cols` (left `NA`, so each event message still appears once).
+#'
 #' @param x A dataframe containing gaze and pupil data with columns: `subject`, `trial`, and `time`.
 #' @param pupil_cols Character vector of pupil diameter column names.
 #' @param gaze_cols Character vector of gaze position column names.
 #' @param target_hz Target sampling frequency (default is 1000 Hz).
 #' @param upsample_pupil Logical; if `TRUE`, pupil data will also be upsampled.
-#' @return A dataframe with up-sampled time points and an `up_sampled` column.
+#' @param event_cols Character vector of event/message columns that should stay
+#'   empty on inserted rows (default `"message"`). Columns not present are ignored.
+#' @return A dataframe with up-sampled time points and an `up_sampled` column
+#'   (`TRUE` for inserted rows, `FALSE` for original ones).
+#' @importFrom purrr map_dfr
 #' @export
 
 upsample_gaze <- function(x,
                           pupil_cols = c("Pupil_Diameter"),
                           gaze_cols = c("x_pred_normalised", "y_pred_normalised"),
                           target_hz = 1000,
-                          upsample_pupil = TRUE) {
+                          upsample_pupil = TRUE,
+                          event_cols = c("message")) {
   # Ensure time is an integer
   x <- x %>% mutate(time = as.integer(time))
 
@@ -32,6 +42,7 @@ upsample_gaze <- function(x,
     map_dfr(~ {
       min_time <- min(.x$time, na.rm = TRUE)
       max_time <- max(.x$time, na.rm = TRUE)
+      orig_times <- .x$time
 
       # Generate strictly spaced time points for upsampling
       time_seq <- tibble(subject = unique(.x$subject),
@@ -42,10 +53,15 @@ upsample_gaze <- function(x,
       .x <- full_join(.x, time_seq, by = c("subject", "trial", "time")) %>%
         arrange(subject, trial, time)
 
-      # Forward-fill missing metadata (excluding pupil & gaze columns)
-      .x <- .x %>%
-        fill(-any_of(non_fill_cols), .direction = "down") %>%
-        mutate(up_sampled = TRUE)
+      # Inserted rows copy metadata from the previous original row; original
+      # rows are left as they are (filling every NA down would also spread
+      # event messages and other sparse values across the trial)
+      inserted <- !(.x$time %in% orig_times)
+      last_orig <- cummax(ifelse(inserted, 0L, seq_len(nrow(.x))))
+      take <- inserted & last_orig > 0
+      copy_cols <- setdiff(names(.x), c(non_fill_cols, event_cols, "subject", "trial", "time"))
+      for (col in copy_cols) .x[[col]][take] <- .x[[col]][last_orig[take]]
+      .x$up_sampled <- inserted
 
       return(.x)
     })
