@@ -3,7 +3,8 @@
 \name{blink_detect}
 \alias{blink_detect}
 \title{Take pupil file and detect blinks
-merge blinks with sample report}
+merge blinks with sample report
+Requires the saccades package (\code{remotes::install_github("tmalsburg/saccades/saccades")}).}
 \usage{
 blink_detect(samp)
 }
@@ -16,4 +17,5 @@ merged data file with blinks detected
 \description{
 Take pupil file and detect blinks
 merge blinks with sample report
+Requires the saccades package (\code{remotes::install_github("tmalsburg/saccades/saccades")}).
 }

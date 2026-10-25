@@ -1,3 +1,12 @@
+# gazer 0.2.7
+
+* saccades is now optional (Suggests instead of Imports), so gazeR installs
+  with CRAN packages only. It is used only by `blink_detect()`, which now
+  checks for it and points to `detect_blinks_noise()` or `read_asc()`'s
+  blink column as alternatives. `parse_edf()` no longer installs or loads
+  saccades (it called `remotes::install_github()` on every run but never
+  used it).
+
 # gazer 0.2.6
 
 * `upsample_gaze()` fixes:

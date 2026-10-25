@@ -15,8 +15,6 @@
 parse_edf <- function (file_list, output_dir, type="pupil") {
 
   library(edfR)#use edfR to read in the edf files
-  remotes::install_github("tmalsburg/saccades/saccades")
-  library(saccades)
   library(data.table)
 
   if (type=="pupil") {
