@@ -28,11 +28,27 @@ and end of a trial.}
 attribute \code{"messages"} (columns \code{trial}, \code{time}, \code{tracker_time}, \code{text}).}
 }
 \value{
-A tibble with columns \code{subject}, \code{trial}, \code{time}, \code{pupil}, \code{x},
-\code{y}, \code{blink}, \code{message}, \code{tracker_time}, one column per trial variable,
-and per-eye columns when \code{eye = "both"}. Attribute \code{"asc_info"} holds the
-sampling rate (\code{hz}), recorded eyes, pupil type (area or diameter) and
-the eye used.
+A tibble with one row per sample:
+\itemize{
+\item \code{subject}: participant label (file name without extension, or \code{subject}).
+\item \code{trial}: trial number (one per \code{TRIALID}).
+\item \code{time}: ms from the start of recording in the trial (\verb{!MODE RECORD}).
+\item \code{pupil}: pupil size in tracker units (area or diameter, see
+\code{asc_info}); \code{NA} when missing. For \code{eye = "average"}/\code{"both"}, the mean
+of both eyes where both are valid.
+\item \code{x}, \code{y}: gaze position in screen pixels; \code{NA} when missing. Averaged
+like \code{pupil}.
+\item \code{blink}: 1 during a blink, 0 otherwise. For \code{eye = "average"}/\code{"both"},
+1 if either eye is in a blink.
+\item \code{message}: event message(s) attached to this sample, otherwise \code{NA}.
+\item \code{tracker_time}: the tracker's own clock (ms).
+\item With \code{eye = "both"}: \code{pupil_left}, \code{pupil_right}, \code{x_left}, \code{y_left},
+\code{x_right}, \code{y_right}, \code{blink_left}, \code{blink_right}, each for one eye.
+\item One column per Experiment Builder trial variable.
+}
+
+Attribute \code{"asc_info"} holds the sampling rate (\code{hz}), recorded eyes,
+pupil type (area or diameter) and the eye used.
 }
 \description{
 A fast, single-file reader for EyeLink \code{.asc} files (convert \code{.edf} with
@@ -61,9 +77,11 @@ left out of the sample data but kept in the full message table.
 \code{\link[utils:type.convert]{utils::type.convert()}}. These are usually your condition columns.
 \item \strong{Blinks} come from the tracker's \code{SBLINK}/\code{EBLINK} events (\code{blink} is
 1 during a blink). Pupil values of 0 and missing gaze (\code{.}) become \code{NA}.
-\item \strong{Binocular data} are handled with \code{eye}: \code{"average"} (mean of the two
-eyes, only where both are valid), \code{"left"}, \code{"right"}, or \code{"both"}
-(per-eye columns plus the average in \code{pupil}).
+\item \strong{Binocular data} are handled with \code{eye}: \code{"average"}, \code{"left"},
+\code{"right"}, or \code{"both"} (per-eye columns plus the average). With
+\code{"average"} and \code{"both"}, \code{pupil}, \code{x} and \code{y} are the \strong{mean of the two
+eyes}, computed only where both eyes are valid (otherwise \code{NA}), and
+\code{blink} is 1 if \strong{either} eye is in a blink.
 }
 }
 \examples{

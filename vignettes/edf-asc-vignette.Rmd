@@ -125,7 +125,14 @@ msgs |> filter(trial == 1, time <= 0)
 
 ## Binocular recordings with read_asc()
 
-For binocular files, `eye` chooses `"left"`, `"right"`, `"average"` (the default: the mean of both eyes where both are valid), or `"both"`, which keeps `pupil_left`, `pupil_right`, `x_left`, ..., `blink_left` and `blink_right` alongside the average:
+For binocular files, `eye` chooses `"left"`, `"right"`, `"average"` (the default), or `"both"`, which keeps `pupil_left`, `pupil_right`, `x_left`, ..., `blink_left` and `blink_right` alongside the average.
+
+With `"average"` and `"both"`:
+
+- `pupil` (and `x`, `y`) is the **average of the two eyes**, computed only where both eyes are valid; otherwise it is `NA`.
+- `blink` is 1 if **either** eye is in a blink (`blink_left | blink_right`), matching the averaged `pupil`, which is missing whenever one eye is.
+
+If you analyse one eye, use that eye's columns together, e.g. `pupil_left` with `blink_left`.
 
 ```{r}
 read_asc(asc_file, eye = "both") |>

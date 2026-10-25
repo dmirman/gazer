@@ -25,9 +25,11 @@
 #'   [utils::type.convert()]. These are usually your condition columns.
 #' * **Blinks** come from the tracker's `SBLINK`/`EBLINK` events (`blink` is
 #'   1 during a blink). Pupil values of 0 and missing gaze (`.`) become `NA`.
-#' * **Binocular data** are handled with `eye`: `"average"` (mean of the two
-#'   eyes, only where both are valid), `"left"`, `"right"`, or `"both"`
-#'   (per-eye columns plus the average in `pupil`).
+#' * **Binocular data** are handled with `eye`: `"average"`, `"left"`,
+#'   `"right"`, or `"both"` (per-eye columns plus the average). With
+#'   `"average"` and `"both"`, `pupil`, `x` and `y` are the **mean of the two
+#'   eyes**, computed only where both eyes are valid (otherwise `NA`), and
+#'   `blink` is 1 if **either** eye is in a blink.
 #'
 #' @param file path to an `.asc` file (may be gzipped).
 #' @param eye which eye to use for binocular recordings: `"average"`,
@@ -38,11 +40,25 @@
 #' @param keep_messages if `TRUE`, the full message table is attached as
 #'   attribute `"messages"` (columns `trial`, `time`, `tracker_time`, `text`).
 #'
-#' @return A tibble with columns `subject`, `trial`, `time`, `pupil`, `x`,
-#'   `y`, `blink`, `message`, `tracker_time`, one column per trial variable,
-#'   and per-eye columns when `eye = "both"`. Attribute `"asc_info"` holds the
-#'   sampling rate (`hz`), recorded eyes, pupil type (area or diameter) and
-#'   the eye used.
+#' @return A tibble with one row per sample:
+#'   * `subject`: participant label (file name without extension, or `subject`).
+#'   * `trial`: trial number (one per `TRIALID`).
+#'   * `time`: ms from the start of recording in the trial (`!MODE RECORD`).
+#'   * `pupil`: pupil size in tracker units (area or diameter, see
+#'     `asc_info`); `NA` when missing. For `eye = "average"`/`"both"`, the mean
+#'     of both eyes where both are valid.
+#'   * `x`, `y`: gaze position in screen pixels; `NA` when missing. Averaged
+#'     like `pupil`.
+#'   * `blink`: 1 during a blink, 0 otherwise. For `eye = "average"`/`"both"`,
+#'     1 if either eye is in a blink.
+#'   * `message`: event message(s) attached to this sample, otherwise `NA`.
+#'   * `tracker_time`: the tracker's own clock (ms).
+#'   * With `eye = "both"`: `pupil_left`, `pupil_right`, `x_left`, `y_left`,
+#'     `x_right`, `y_right`, `blink_left`, `blink_right`, each for one eye.
+#'   * One column per Experiment Builder trial variable.
+#'
+#'   Attribute `"asc_info"` holds the sampling rate (`hz`), recorded eyes,
+#'   pupil type (area or diameter) and the eye used.
 #' @importFrom data.table := .I .N .SD
 #' @export
 #' @examples
