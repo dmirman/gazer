@@ -15,11 +15,17 @@ This package contains functions for reading in raw eye-tracking data, formatting
 
 # Installing Package
 
-``` r
-# install devtools
-install.packages("devtools")
+From [r-universe](https://jgeller112.r-universe.dev) (binaries for Windows and macOS, no build tools needed):
 
-# install gazer from GitHub
+``` r
+install.packages("gazer",
+                 repos = c("https://jgeller112.r-universe.dev", "https://cloud.r-project.org"))
+```
+
+Or from GitHub:
+
+``` r
+# install.packages("remotes")
 remotes::install_github("dmirman/gazer")
 ``` 
 
