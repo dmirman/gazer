@@ -26,6 +26,13 @@
   Results from this combination will change. Other combinations are
   unaffected.
 
+* `lowpass_filter()` produced large edge artifacts. `signal::filtfilt()`
+  pads with zeros, so both ends of the filtered signal were pulled towards 0
+  (e.g. a trace around 1000 started near 500 and ended near 60). The signal
+  is now mean-centred and padded by odd reflection before filtering, then
+  trimmed and restored. Filtered values will change, mostly at the start and
+  end of each trial, so re-run analyses that used `lowpass_filter()`.
+
 ## Other
 
 * The shiny gazeR app (<https://github.com/jgeller112/shiny-gazeR>) provides

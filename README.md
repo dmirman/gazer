@@ -32,7 +32,9 @@ Please use the issues tab (https://github.com/dmirman/gazer/issues) to file any 
 
 New `read_asc()` function: a fast, single-file reader for EyeLink `.asc` files. It returns one row per sample with messages, blink flags and Experiment Builder trial variables already attached, and needs no folder-per-subject layout. On a 1000 Hz binocular recording it is about 40× faster than `parse_asc()`.
 
-Bug fix: `smooth_interpolate_pupil()` with cubic interpolation, `step.first = "interp"` and Hanning smoothing was filtering the un-interpolated signal. If you used that combination, re-run your pre-processing. See `NEWS.md` for details.
+Bug fix: `smooth_interpolate_pupil()` with cubic interpolation, `step.first = "interp"` and Hanning smoothing was filtering the un-interpolated signal. If you used that combination, re-run your pre-processing.
+
+Bug fix: `lowpass_filter()` pulled the start and end of each filtered trial towards 0, because `signal::filtfilt()` zero-pads. It now centres and reflection-pads the signal first. If you used `lowpass_filter()`, re-run it. See `NEWS.md` for details.
 
 Want a point-and-click interface? [shiny gazeR](https://github.com/jgeller112/shiny-gazeR) runs gazeR's pupil pipeline in a Shiny app (`shinygazer::run_app()`).
 
