@@ -25,6 +25,8 @@ Therefore, the current functions emulate the workings of these functions using t
 
 These functions handle both visual-world-paradigm (gaze) and pupillometry data, and support monocular as well as binocular recordings (see the binocular option below).
 
+**New in gazeR 0.2.5:** `read_asc()` reads a single `.asc` file straight into a data frame, with messages, trial variables and blink flags already attached. It is much faster than the `parse_asc()` workflow below and needs no folder-per-participant setup, so it is now the recommended way to read `.asc` files. See [Reading ASC files with read_asc()](#reading-asc-files-with-read_asc) below.
+
 # EDF to ASC conversion
 
 It is critical that the EDF conversion puts out both events and samples!!
@@ -36,7 +38,7 @@ The first function generates a batch file that allows the one-click generation o
 This conversion will take quite long then!
 
 
-```{r, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE, eval=FALSE}
 
 remotes::install_github("dmirman/gazer")
 library(gazer)
@@ -47,7 +49,7 @@ library(knitr)
 ```
 
 
-```{r, message=FALSE, warning=FALSE, echo=FALSE}
+```{r, message=FALSE, warning=FALSE, echo=FALSE, eval=FALSE}
 
 #a list of the subdirectories generated with a regular expression
 #starts with "pp" followed by one or more digits before the end of the string
@@ -67,13 +69,90 @@ cat(paste(subDirs, collapse = "\n"))
 
 ```
 
-```{r. eval=FALSE}
+```{r, eval=FALSE}
 
 
 generate_edf2asc_bat(mainDir, subDirs)
 
 ```
 
+
+# Reading ASC files with read_asc() {#reading-asc-files-with-read_asc}
+
+`read_asc()` reads one `.asc` file (gzipped or not) and returns one row per sample. gazeR includes an example: the first 6 trials of one participant (PN010) from a Black-and-White Switch task in the public OSF project [Dynamics of the Pupillary Consensual Response](https://osf.io/7k9tr/), recorded binocularly at 1000 Hz.
+
+```{r, message=FALSE, warning=FALSE}
+library(gazer)
+library(dplyr)
+
+asc_file <- system.file("extdata", "PN010BWS.asc.gz", package = "gazer")
+
+pn010 <- read_asc(asc_file, eye = "left")
+pn010
+```
+
+The columns are:
+
+- `subject`: the file name without extension (or set `subject =`)
+- `trial`: a trial runs from each `TRIALID` message to its `TRIAL_RESULT` message
+- `time`: ms from the start of recording in that trial (the `!MODE RECORD` message), as in `parse_asc()`
+- `pupil`, `x`, `y`: `NA` when the tracker lost the eye (instead of `0` and `1e8`)
+- `blink`: 1 during a blink, from the tracker's `SBLINK`/`EBLINK` events
+- `message`: event messages, each attached to the first sample at or after it, with Experiment Builder offsets applied
+- `tracker_time`: the original tracker clock
+- one column per Experiment Builder trial variable (`!V TRIAL_VAR`)
+
+The sampling rate, recorded eyes and pupil type are stored with the data:
+
+```{r}
+attr(pn010, "asc_info")
+```
+
+Trial variables and messages are ready to use, with no separate `find_messages_asc()` or merge step:
+
+```{r}
+pn010 |> distinct(trial, block, screen)
+
+pn010 |> filter(!is.na(message)) |> select(trial, time, message)
+```
+
+Messages logged before recording starts in each trial (`TRIALID` and the tracker's setup messages) have no sample to attach to. `keep_messages = TRUE` returns every message, with its time relative to the start of recording:
+
+```{r}
+msgs <- attr(read_asc(asc_file, keep_messages = TRUE), "messages")
+msgs |> filter(trial == 1, time <= 0)
+```
+
+## Binocular recordings with read_asc()
+
+For binocular files, `eye` chooses `"left"`, `"right"`, `"average"` (the default: the mean of both eyes where both are valid), or `"both"`, which keeps `pupil_left`, `pupil_right`, `x_left`, ..., `blink_left` and `blink_right` alongside the average:
+
+```{r}
+read_asc(asc_file, eye = "both") |>
+  select(trial, time, pupil, pupil_left, pupil_right, blink_left, blink_right) |>
+  head()
+```
+
+## Several participants
+
+Read each file and stack the results. Keep each participant's sampling rate and check that they match: blink extension, interpolation gaps and filtering all depend on it, so participants recorded at different rates (e.g. 500 vs 1000 Hz) should be processed separately.
+
+```{r, eval=FALSE}
+files <- list.files("data/asc", pattern = "\\.asc$", full.names = TRUE)
+
+all_data <- lapply(files, function(f) {
+  d <- read_asc(f, eye = "left")
+  d$hz <- attr(d, "asc_info")$hz
+  d
+}) |>
+  bind_rows()
+
+all_data |> distinct(subject, hz)
+```
+
+At 500 Hz a sample arrives only every 2 ms, so a trial's first sample is at 0 or 1 ms after recording starts, roughly half the time each. This is expected.
+
+The output of `read_asc()` can go straight into the pupil functions (`extend_blinks()`, `smooth_interpolate_pupil()`, `baseline_correction_pupil_msg()`, ...); see the pupil pre-processing vignette. [shiny gazeR](https://github.com/jgeller112/shiny-gazeR) provides a point-and-click interface that reads `.asc` files with `read_asc()`.
 
 # Parsing the ASC File
 
@@ -116,6 +195,8 @@ The function generates three files in the home directory:
 2. overview_INPUTFILE.txt containing an overview of the messages in the asc file
 3. VAR_overview_INPUTFILE.txt containing an overview of the TRIAL_VARIABLES that have been put out while running the experiment.
 
+**Known issue:** `parse_asc()` treats any line whose first field is a whole number as a sample. Calibration-result lines in the file header (e.g. `   1 1 1 1094138081`) match this, so they end up as fake samples in trial 1. When several participants are processed in one call, these rows get a large negative `time` carried over from the previous participant, and two or more of them can share the same time. In existing `_eye.csv` and `_combined.csv` files, these are the rows with `time < 0` and can be deleted. `read_asc()` only reads lines that start with a timestamp, so it is not affected.
+
 # Extraction of messages
 The next step is to extract information about the trials from the messages. This will be specific to each study, but the overview files should help to remind the user of how the experiment was set up.
 
@@ -130,7 +211,7 @@ It has four parameters:
 
 
 
-```{r}
+```{r, eval=FALSE}
 myDirList = dir(mainDir,pattern = "^pp01$")
 #the three types of information to be extracted
 msg2extracts = c("clicked")
@@ -153,7 +234,7 @@ The next step is analogous to the `merge_gazer_files` function, which merges mes
 For each directory, the function will feedback whether it found the expected files, and also produce a summary of how many merge attempts were succesful or not. In the example below, I purposefully included some entries in the directory list for which things dont work, so that the error handling becomes clear.
 
 
-```{r}
+```{r, eval=FALSE}
 
 myDirList = dir(mainDir, pattern = "^pp")
 
@@ -167,7 +248,7 @@ The files resulting from this process can be used with the general gazeR functio
 
 Below is the data ready for analysis in gazeR. 
 
-```{r}
+```{r, eval=FALSE}
 
 
 gaze_dat <- fread(here::here("pp3", "pp3_combined.csv")) %>% 

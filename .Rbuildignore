@@ -6,3 +6,4 @@
 ^Gazer_walkthrough\.R$
 ^gazer_.*\.tar\.gz$
 ^gazer\.Rcheck$
+^data-raw$

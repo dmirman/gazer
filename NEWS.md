@@ -1,3 +1,15 @@
+# gazer (development version)
+
+* The ASC vignette has a new section on `read_asc()` (reading files, trial
+  variables and messages, binocular options, several participants, sampling
+  rate checks) and a note on the `parse_asc()` calibration-line issue that
+  produced negative and duplicated times. The vignette now builds: chunks
+  that need data not shipped with gazeR are no longer run.
+* New example file `inst/extdata/PN010BWS.asc.gz`: the first 6 trials of one
+  participant from the public OSF project "Dynamics of the Pupillary
+  Consensual Response" (https://osf.io/7k9tr/), binocular at 1000 Hz. See
+  `data-raw/make_example_asc.R`.
+
 # gazer 0.2.5
 
 ## New features
