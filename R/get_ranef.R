@@ -12,10 +12,13 @@ get_ranef <- function(model=NULL, ranef_name=NULL){
   if(is.null(model) | is.null(ranef_name)){
     stop("Both model and ranef_name need to be specified.")
   }
+  if (!requireNamespace("lme4", quietly = TRUE)) {
+    stop("get_ranef() needs the lme4 package: install.packages(\"lme4\").", call. = FALSE)
+  }
   # get the named random effects and add info from rownames
-  re <- ranef(model)[[ranef_name]] %>%
+  re <- lme4::ranef(model)[[ranef_name]] %>%
     mutate(rn = rownames(.)) %>%
-    separate(rn, unlist(strsplit(ranef_name, ":")), sep = ":", remove=TRUE)
+    tidyr::separate(rn, unlist(strsplit(ranef_name, ":")), sep = ":", remove=TRUE)
 
   #if necessary, remove annoying parens from variable name
   if(any(names(re)=="(Intercept)")){

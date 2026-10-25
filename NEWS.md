@@ -1,3 +1,12 @@
+# gazer 0.2.8
+
+* lme4 is now optional (Suggests instead of Imports). It is only used by the
+  model helpers `get_ranef()` and `get_pvalues(method = "KR")`, which now
+  call `lme4::ranef()`/`lme4::fixef()` explicitly (previously they only
+  worked if lme4 was attached) and say how to install it if missing.
+* `get_ranef()` also failed unless tidyr was attached (`separate()` wasn't
+  namespaced); fixed.
+
 # gazer 0.2.7
 
 * saccades is now optional (Suggests instead of Imports), so gazeR installs

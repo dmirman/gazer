@@ -38,7 +38,10 @@ get_pvalues <- function(model, method = "normal") {
   # Apply KR if asked for
   if (method %in% c("KR", "all")) {
     #run a minimal KRmodcomp
-    restrictionMatrix <- cbind(t(rep(0, length(fixef(model))-1)), 1)
+    if (!requireNamespace("lme4", quietly = TRUE)) {
+      stop("get_pvalues(method = \"KR\") needs the lme4 package: install.packages(\"lme4\").", call. = FALSE)
+    }
+    restrictionMatrix <- cbind(t(rep(0, length(lme4::fixef(model))-1)), 1)
     kr <- pbkrtest::KRmodcomp(model, restrictionMatrix)
     #get ddf
     coefs$df.KR <- pbkrtest::getKR(kr, "ddf")

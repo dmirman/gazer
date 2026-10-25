@@ -1,7 +1,7 @@
 Package: gazer
 Type: Package
 Title: Tools for Processing Eye Tracking Data
-Version: 0.2.7
+Version: 0.2.8
 Date: 2026-10-25
 Authors@R: c(
   person("Jason", "Geller", email = "drjasongeller@gmail.com", role = c("aut", "cre")),
@@ -19,7 +19,6 @@ Imports:
     data.table,
     dplyr,
     ggplot2,
-    lme4,
     purrr,
     readr,
     signal,
@@ -29,6 +28,7 @@ Imports:
     zoo
 Suggests:
     knitr,
+    lme4,
     rmarkdown,
     saccades
 Remotes:
