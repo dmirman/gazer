@@ -1,6 +1,6 @@
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/dmirman/gazer/master?urlpath=rstudio)
 [![Open in Code Ocean](https://codeocean.com/codeocean-assets/badge/open-in-code-ocean.svg)](https://codeocean.com/capsule/4600160/tree/v1)
-gazeR 0.2.4
+gazeR 0.2.5
 
 
 # gazeR:A package to analyze gaze position and pupil size data
@@ -27,6 +27,14 @@ remotes::install_github("dmirman/gazer")
   
 Please use the issues tab (https://github.com/dmirman/gazer/issues) to file any bugs or suggestions.
  
+
+# Updates (October 2026)
+
+New `read_asc()` function: a fast, single-file reader for EyeLink `.asc` files. It returns one row per sample with messages, blink flags and Experiment Builder trial variables already attached, and needs no folder-per-subject layout. On a 1000 Hz binocular recording it is about 40× faster than `parse_asc()`.
+
+Bug fix: `smooth_interpolate_pupil()` with cubic interpolation, `step.first = "interp"` and Hanning smoothing was filtering the un-interpolated signal. If you used that combination, re-run your pre-processing. See `NEWS.md` for details.
+
+Want a point-and-click interface? [shiny gazeR](https://github.com/jgeller112/shiny-gazeR) runs gazeR's pupil pipeline in a Shiny app (`shinygazer::run_app()`).
 
 # Updates (July 2026)
 
