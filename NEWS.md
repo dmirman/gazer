@@ -1,3 +1,19 @@
+# gazer 0.2.9
+
+* `smooth_interpolate_pupil()`: smoothing (moving average or Hanning) is now
+  done **within each trial**. Before, it ran over the whole data frame, so
+  the first and last samples of each trial were blended with the
+  neighbouring trial (or the next participant): about n/2 samples at each
+  edge for the moving average and 5 for the 11-point Hanning window.
+  Interpolation was already per trial. Results change slightly near trial
+  edges, which can affect baselines measured at the start of a trial.
+* `smooth_interpolate_pupil()`: four combinations that always failed now
+  work (cubic interpolation with `extendblinks = FALSE`), and two linear
+  interpolate-first combinations no longer pipe their result into
+  `return()`. `na.locf()` fills no longer drop leading values, which could
+  make columns the wrong length.
+* `hanning_filter()` no longer errors on an all-missing vector.
+
 # gazer 0.2.8
 
 * lme4 is now optional (Suggests instead of Imports). It is only used by the

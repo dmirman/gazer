@@ -9,7 +9,8 @@ hanning_filter <- function(pupil, degree=11){
     w <- w/sum(w)
     # class(w) <- 'Ma'
     y <- as.vector(stats::filter(pupil, w))
-    y<-zoo::na.approx(y, rule=2)
+    # Fill the filter's edge NAs; needs at least two valid values
+    if (sum(!is.na(y)) >= 2) y <- zoo::na.approx(y, rule=2)
     return (y)
   }
   
