@@ -1,6 +1,6 @@
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/dmirman/gazer/master?urlpath=rstudio)
 [![Open in Code Ocean](https://codeocean.com/codeocean-assets/badge/open-in-code-ocean.svg)](https://codeocean.com/capsule/4600160/tree/v1)
-gazeR 0.2.5
+gazeR 0.2.9
 
 
 # gazeR:A package to analyze gaze position and pupil size data
@@ -36,13 +36,21 @@ Please use the issues tab (https://github.com/dmirman/gazer/issues) to file any 
 
 # Updates (October 2026)
 
-New `read_asc()` function: a fast, single-file reader for EyeLink `.asc` files. It returns one row per sample with messages, blink flags and Experiment Builder trial variables already attached, and needs no folder-per-subject layout. On a 1000 Hz binocular recording it is about 40× faster than `parse_asc()`.
+**Install from r-universe.** gazeR is now built on [r-universe](https://jgeller112.r-universe.dev), with binaries for Windows and macOS, so no build tools are needed (see Installing Package above). It also installs with CRAN packages only: saccades (used only by `blink_detect()`) and lme4 (used only by `get_ranef()` and `get_pvalues(method = "KR")`) are now optional.
 
-Bug fix: `smooth_interpolate_pupil()` with cubic interpolation, `step.first = "interp"` and Hanning smoothing was filtering the un-interpolated signal. If you used that combination, re-run your pre-processing.
+**New `read_asc()` function.** A fast, single-file reader for EyeLink `.asc` files. It returns one row per sample with messages, blink flags and Experiment Builder trial variables already attached, and needs no folder-per-subject layout. On a 1000 Hz binocular recording it is about 40× faster than `parse_asc()`. The ASC vignette has a new section on it, using a real example file (`inst/extdata/PN010BWS.asc.gz`).
 
-Bug fix: `lowpass_filter()` pulled the start and end of each filtered trial towards 0, because `signal::filtfilt()` zero-pads. It now centres and reflection-pads the signal first. If you used `lowpass_filter()`, re-run it. See `NEWS.md` for details.
+**Bug fixes.** If you used any of these, re-run your pre-processing:
 
-Want a point-and-click interface? [shiny gazeR](https://github.com/jgeller112/shiny-gazeR) runs gazeR's pupil pipeline in a Shiny app (`shinygazer::run_app()`).
+- `smooth_interpolate_pupil()` smoothed across trials: the first and last few samples of each trial (about n/2 for the moving average, 5 for Hanning) were blended with the neighbouring trial or participant. Smoothing is now done within each trial. In practice this rarely changes results, unless your baseline or analysis window includes the first or last ~20 ms of a recording. Some option combinations that always failed (cubic interpolation with `extendblinks = FALSE`) now work.
+- `smooth_interpolate_pupil()` with cubic interpolation, `step.first = "interp"` and Hanning smoothing was filtering the un-interpolated signal.
+- `lowpass_filter()` pulled the start and end of each filtered trial towards 0, because `signal::filtfilt()` zero-pads. It now centres and reflection-pads the signal first. This is the one with a large effect, so re-run it if you used it.
+- `upsample_gaze()` copied values into every gap of other columns (e.g. one event message was repeated on every following sample). Original rows are now unchanged and each message appears once.
+- `parse_asc()` can read calibration lines in the file header as samples, producing a few rows with large negative `time` values (often duplicated). These rows can be deleted; `read_asc()` is not affected.
+
+See `NEWS.md` for full details.
+
+**Point-and-click app.** [shiny gazeR](https://github.com/jgeller112/shiny-gazeR) runs gazeR's pupil pipeline in a Shiny app, on your computer (`shinygazer::run_app()`) or [in your browser](https://jgeller112.github.io/shiny-gazeR/).
 
 # Updates (July 2026)
 

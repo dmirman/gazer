@@ -1,5 +1,8 @@
 # gazer 0.2.9
 
+* README: updated install instructions (r-universe) and a summary of the
+  October 2026 changes and bug fixes.
+
 * `smooth_interpolate_pupil()`: smoothing (moving average or Hanning) is now
   done **within each trial**. Before, it ran over the whole data frame, so
   the first and last samples of each trial were blended with the
