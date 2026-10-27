@@ -7,8 +7,10 @@
 #' @param legend_fill Legend fill color, defaults to white
 #' @export
 #' @examples
-#' last_plot() + legend_positioning(c(0,1)) #put legend in upper left corner
-#' last_plot() + legend_positioning(c(1,0)) #put legend in lower right corner
+#' library(ggplot2)
+#' p <- ggplot(TargetFix, aes(Time, meanFix, color = Condition)) + stat_summary(fun = mean, geom = "line")
+#' p + legend_positioning(c(0,1)) #put legend in upper left corner
+#' p + legend_positioning(c(1,0)) #put legend in lower right corner
 legend_positioning <- function(pos, edge_color="black", legend_fill="white"){
   return(theme(legend.justification = pos, legend.position = pos,
                legend.background = element_rect(color = edge_color, fill = legend_fill)))

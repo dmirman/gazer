@@ -18,7 +18,7 @@
 #' @export
 #' @examples
 #' WordLearnEx.gca <- code_poly(df=WordLearnEx, predictor="Block", poly.order=2)
-#' Az.gca <- code_poly(df=Az, predictor="Time", poly.order=2, orthogonal=FALSE)
+#' TargetFix.gca <- code_poly(df=TargetFix, predictor="Time", poly.order=2, orthogonal=FALSE)
 code_poly <- function(df=NULL, predictor=NULL, poly.order=NULL, orthogonal=TRUE, draw.poly=TRUE){
   if (draw.poly){
     require(ggplot2)

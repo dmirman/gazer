@@ -1,3 +1,21 @@
+# gazer 0.2.11
+
+* New `read_bids_eyetrack()`: reads BIDS eye-tracking data (BEP020
+  `*_physio.tsv.gz` recordings with their JSON sidecars and
+  `*_physioevents.tsv.gz` events) into the same layout as `read_asc()`.
+  Participants come from the `sub`/`ses`/`task`/`run` entities; left- and
+  right-eye recordings are merged by timestamp (`eye = "average"`, `"left"`,
+  `"right"` or `"both"`); event messages are attached to samples and blink
+  events become `blink`. Each run is one trial unless `trial_start` names
+  the messages that start a trial.
+  Timestamps in s, ms, us or ns are converted to ms, so BIDS conversions
+  from EyeLink, Tobii and Pupil Labs all work; the sidecars' sampling rate,
+  manufacturer and pupil units are returned in `attr(x, "bids_info")`.
+* New vignette "Reading BIDS eye-tracking data with gazeR", with an example
+  BIDS dataset in `inst/extdata/bids_eyetrack` (built by
+  `data-raw/make_example_bids.R` from `PN010BWS.asc.gz`).
+* jsonlite is now imported.
+
 # gazer 0.2.10
 
 * New `resample_gaze()`: brings each participant's data to a target sampling

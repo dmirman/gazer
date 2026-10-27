@@ -87,12 +87,12 @@ Filter out error and practice trials, and focus on relevant time window. Then gr
 
 ```{r}
 gaze_subj <- gaze_bin %>%
-  filter(acc == 1, condition != "practice", timebin < 3500) %>%
+  filter(acc == 1, condition != "practice", timebins < 3500) %>%
   # calculate number of valid trials for each subject-condition
   group_by(subject, condition, object) %>%
   mutate(nTrials = length(unique(target))) %>% ungroup() %>%
   # calculate number of looks
-  group_by(subject, condition, object, timebin) %>%
+  group_by(subject, condition, object, timebins) %>%
   summarize(sumfix = sum(Fix, na.rm=TRUE), # number of fixations
             ntrials = unique(nTrials), # number of trials
             meanfix = sum(Fix, na.rm=TRUE)/unique(nTrials)) # fixation proportion
@@ -107,7 +107,7 @@ summary(gaze_subj)
 
 ## Plot fixation time course
 ```{r, fig.height=5, fig.width=8}
-ggplot(gaze_subj, aes(timebin, meanfix, color = object)) +
+ggplot(gaze_subj, aes(timebins, meanfix, color = object)) +
   facet_wrap(~ condition) +
   theme_gray() +
   labs(x = "Time (ms)",y = "Proportion of Fixations") +

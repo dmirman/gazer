@@ -1,8 +1,8 @@
 Package: gazer
 Type: Package
 Title: Tools for Processing Eye Tracking Data
-Version: 0.2.10
-Date: 2026-10-25
+Version: 0.2.11
+Date: 2026-10-26
 Authors@R: c(
   person("Jason", "Geller", email = "drjasongeller@gmail.com", role = c("aut", "cre")),
   person("Dan", "Mirman", email = "dan@danmirman.org", role = "aut"),
@@ -18,6 +18,7 @@ LazyData: true
 Imports:
     data.table,
     dplyr,
+    jsonlite,
     ggplot2,
     purrr,
     readr,
@@ -27,10 +28,13 @@ Imports:
     tidyr,
     zoo
 Suggests:
+    cowplot,
     knitr,
     lme4,
+    patchwork,
     rmarkdown,
-    saccades
+    saccades,
+    tidyverse
 Remotes:
     tmalsburg/saccades/saccades
 VignetteBuilder: knitr

@@ -18,5 +18,7 @@ Returns a data frame with rows for each numeric variable in the input data frame
 For each numeric variable in a data frame, computes number of observations, mean, and standard deviation, for each group, and t- and p-values for the t-test comparing the groups.
 }
 \examples{
+\dontrun{
 compare_groups(SND, "SemNear_Cond")
+}
 }

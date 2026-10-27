@@ -6,7 +6,9 @@
 #' @param Group string name of grouping variable
 #' @return Returns a data frame with rows for each numeric variable in the input data frame (plus N, for number of observations) and columns for mean, SD, t-value, and p-value.
 #' @examples
+#' \dontrun{
 #' compare_groups(SND, "SemNear_Cond")
+#' }
 compare_groups <- function(dat, Group){
   tval <- pval <- num <- NA
   for (i in 1:ncol(dat)){

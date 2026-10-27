@@ -18,5 +18,12 @@ Returns a data frame containing the random effect estimates
 Takes a model and name of a random effect. Returns a data frame containing those random effect estimates arranged and ready for quantifying individual effect sizes.
 }
 \examples{
-re <- get_ranef(m.FT, "Subject:Object:Condition") #using FunctTheme example model
+\dontrun{
+# FunctTheme example model
+FunctTheme.gca <- code_poly(FunctTheme, predictor = "Time", poly.order = 2, draw.poly = FALSE)
+m.FT <- lme4::lmer(meanFix ~ (poly1 + poly2) * Object * Condition +
+                     (poly1 + poly2 | Subject) + (poly1 + poly2 | Subject:Object:Condition),
+                   data = FunctTheme.gca, REML = FALSE)
+re <- get_ranef(m.FT, "Subject:Object:Condition")
+}
 }

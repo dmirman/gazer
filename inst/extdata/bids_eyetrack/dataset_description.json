@@ -1,0 +1,9 @@
+{
+  "Name": "gazeR example: Black-and-White Switch task (PN010, 6 trials)",
+  "BIDSVersion": "1.10.0",
+  "DatasetType": "raw",
+  "License": "CC-BY-4.0",
+  "ReferencesAndLinks": [
+    "https://osf.io/7k9tr/"
+  ]
+}

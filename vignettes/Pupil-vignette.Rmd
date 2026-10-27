@@ -24,8 +24,11 @@ Please see our pre-print for a more in-depth walkthrough of the functions below.
 # Loading package
 
 
-```{r, message=FALSE, warning=FALSE}
+```{r, eval=FALSE}
 remotes::install_github("dmirman/gazer")
+```
+
+```{r, message=FALSE, warning=FALSE}
 library(gazer)
 library(data.table)
 library(tidyverse)

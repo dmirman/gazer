@@ -38,5 +38,5 @@ result.
 }
 \examples{
 WordLearnEx.gca <- code_poly(df=WordLearnEx, predictor="Block", poly.order=2)
-Az.gca <- code_poly(df=Az, predictor="Time", poly.order=2, orthogonal=FALSE)
+TargetFix.gca <- code_poly(df=TargetFix, predictor="Time", poly.order=2, orthogonal=FALSE)
 }

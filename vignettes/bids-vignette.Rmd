@@ -1,0 +1,149 @@
+---
+title: "Reading BIDS eye-tracking data with gazeR"
+author: "Jason Geller"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{"Gazer and BIDS eye-tracking data"}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# BIDS for eye tracking
+
+The [Brain Imaging Data Structure (BIDS)](https://bids.neuroimaging.io/) is a standard way to organise and describe data. Eye-tracking data are stored as physiological recordings ([BEP020](https://bids-specification.readthedocs.io/en/latest/modality-specific-files/physiological-recordings.html)). For each participant, task and run there is one recording per eye:
+
+```
+my_dataset/
+  dataset_description.json
+  sub-01/
+    eye/   (or beh/, func/)
+      sub-01_task-rest_recording-eye1_physio.tsv.gz        samples, no header
+      sub-01_task-rest_recording-eye1_physio.json          sidecar: columns, rate, eye
+      sub-01_task-rest_recording-eye1_physioevents.tsv.gz  messages, blinks, ...
+      sub-01_task-rest_recording-eye1_physioevents.json
+      sub-01_task-rest_recording-eye2_physio.tsv.gz        ... same for the other eye
+```
+
+- `*_physio.tsv.gz` has **no header**. Its column names are listed in the `Columns` field of the JSON sidecar, usually `timestamp`, `x_coordinate`, `y_coordinate` and `pupil_size`. Missing values are `n/a`.
+- The sidecar also gives `SamplingFrequency`, `RecordedEye` (`"left"`, `"right"` or `"cyclopean"`) and the units of each column.
+- `*_physioevents.tsv.gz` lists events with an `onset`, a `duration` (in seconds) and, for example, a `trial_type` and a `message`. With `"OnsetSource": "timestamp"` in its sidecar, onsets are on the same clock as the samples' `timestamp`.
+
+Tools such as [eye2bids](https://github.com/bids-standard/eye2bids) convert EyeLink `.edf` files to this format.
+
+
+# Reading BIDS data with read_bids_eyetrack()
+
+`read_bids_eyetrack()` reads a BIDS dataset (or a set of `*_physio.tsv.gz` files) into one data frame, one row per sample, in the same layout as `read_asc()`. gazeR includes a small example: the first 6 trials of participant PN010 from the Black-and-White Switch task in the public OSF project [Dynamics of the Pupillary Consensual Response](https://osf.io/7k9tr/) (binocular, 1000 Hz), written as BIDS from the `.asc` file used in the ASC vignette.
+
+```{r, message=FALSE, warning=FALSE}
+library(gazer)
+library(dplyr)
+
+bids_dir <- system.file("extdata", "bids_eyetrack", package = "gazer")
+list.files(bids_dir, recursive = TRUE)
+```
+
+Point `read_bids_eyetrack()` at the dataset folder. It searches it for `*_physio.tsv.gz` files and reads each one with its sidecar and events file:
+
+```{r}
+pn010 <- read_bids_eyetrack(bids_dir)
+pn010
+```
+
+The columns are:
+
+- `subject`: built from the `sub-`, `ses-`, `task-` and `run-` entities of the file name, e.g. `sub-PN010_task-bws`. Each run of each task is kept apart.
+- `trial`: see [Trials](#trials) below.
+- `time`: ms from the start of the trial. Timestamps recorded in seconds are converted to ms.
+- `pupil`, `x`, `y`: from `pupil_size`, `x_coordinate` and `y_coordinate`. Pupil values of 0 or less count as missing (`NA`).
+- `blink`: 1 during a blink, from `trial_type == "blink"` (or a `blink` column equal to 1) in the events file, for its `duration`.
+- `message`: messages from the events file, each attached to the first sample at or after its onset. Several messages on the same sample are joined with `"; "`.
+- `tracker_time`: the original `timestamp`.
+- `sample_rate`: `SamplingFrequency` from the sidecar.
+- `eyes_recorded`: `"both"`, or the single eye recorded.
+
+Any other sample columns in the file are kept.
+
+## Eyes
+
+When a run has a recording for each eye, they are merged by timestamp and `eye` works as in `read_asc()`: `"average"` (the default), `"left"`, `"right"`, or `"both"`.
+
+With `"average"` and `"both"`:
+
+- `pupil` (and `x`, `y`) is the **average of the two eyes**, computed only where both eyes are valid; otherwise it is `NA`.
+- `blink` is 1 if **either** eye is in a blink.
+
+`"both"` also keeps each eye's columns (`pupil_left`, `pupil_right`, `x_left`, ..., `blink_left`, `blink_right`):
+
+```{r}
+read_bids_eyetrack(bids_dir, eye = "both") |>
+  select(time, pupil, pupil_left, pupil_right, blink_left, blink_right) |>
+  head()
+```
+
+## Trials {#trials}
+
+A BIDS recording is one continuous stream, so by default each run is a single trial and `time` is ms from its first sample. That suits resting-state or other continuous recordings.
+
+For a task with trials, give `trial_start` one or more messages that mark the start of each trial. A new trial starts at every message beginning with one of them, `time` is ms from that message, and samples before the first one are dropped. In this EyeLink example, every trial starts with a `TRIALID` message:
+
+```{r}
+pn010 <- read_bids_eyetrack(bids_dir, eye = "left", trial_start = "TRIALID")
+
+pn010 |>
+  group_by(trial) |>
+  summarise(samples = n(), duration_ms = max(time), blink_pct = 100 * mean(blink))
+```
+
+You can also start trials at task events, e.g. `trial_start = c("LONG_TRIAL_START", "SHORT_TRIAL_START")`. A trial then runs until the next of those messages, so it can include the inter-trial interval.
+
+The messages give the events within each trial, ready for time-locking (e.g. with `baseline_correction_pupil_msg()`):
+
+```{r}
+pn010 |>
+  filter(!is.na(message), !startsWith(message, "!")) |>
+  select(trial, time, message) |>
+  head(8)
+```
+
+Messages logged while the tracker was not recording (between trials) have no sample of their own, so they attach to the next recorded sample. Here, the setup messages and `TRIALID` of each trial land on its first sample, and so do the Experiment Builder trial variables (`!V TRIAL_VAR`) of the *previous* trial, which are logged after its recording ends. For EyeLink data, `read_asc()` assigns trial variables to the right trial. With BIDS data, take trial information from your behavioural or `events.tsv` files.
+
+## Other eye trackers
+
+The format is the same for every tracker, so `read_bids_eyetrack()` also reads BIDS data from Tobii, Pupil Labs and others. Trackers use different clocks (Pupil Labs timestamps are in ns, Tobii's in µs), so timestamps are converted to ms using the `Units` of `timestamp` in the sidecar (`s`, `ms`, `us` or `ns`). If no units are given, they are inferred from the step between samples and `SamplingFrequency`. The sidecar details for each participant are kept in an attribute:
+
+```{r}
+attr(read_bids_eyetrack(bids_dir), "bids_info")
+```
+
+Check `pupil_units` before choosing a plausible pupil range (e.g. 2–9 mm for Pupil Labs, arbitrary units for EyeLink). If there are no blink events (`blink_events` is `FALSE`, as with most Tobii data), detect blinks from the signal, e.g. with `detect_blinks_noise()`.
+
+# Several participants and runs
+
+Point `read_bids_eyetrack()` at the top of the dataset and it reads every participant, session, task and run. To read only some, pass the files:
+
+```{r, eval=FALSE}
+files <- list.files("my_dataset", pattern = "task-rest.*_physio\\.tsv\\.gz$",
+                    recursive = TRUE, full.names = TRUE)
+rest <- read_bids_eyetrack(files)
+
+rest |> distinct(subject, sample_rate, eyes_recorded)
+```
+
+Check that the participants' sampling rates match: blink extension, interpolation gaps and filtering all depend on it. `resample_gaze()` can bring them to a common rate:
+
+```{r, eval=FALSE}
+rest <- resample_gaze(rest, target_hz = 500)
+```
+
+# Next steps
+
+The output of `read_bids_eyetrack()` goes straight into the pupil functions (`extend_blinks()`, `smooth_interpolate_pupil()`, `baseline_correction_pupil_msg()`, ...); see the pupil pre-processing vignette. [shiny gazeR](https://github.com/jgeller112/shiny-gazeR) can also read BIDS eye-tracking data: choose **BIDS (eye-tracking)** as the eye tracker and upload a `.zip` of the dataset.

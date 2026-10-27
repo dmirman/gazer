@@ -1,0 +1,24 @@
+{
+  "SamplingFrequency": 1000,
+  "StartTime": 0,
+  "Columns": ["timestamp", "x_coordinate", "y_coordinate", "pupil_size"],
+  "PhysioType": "eyetrack",
+  "RecordedEye": "right",
+  "SampleCoordinateSystem": "gaze-on-screen",
+  "Manufacturer": "SR-Research",
+  "EnvironmentCoordinates": "top-left",
+  "timestamp": {
+    "Description": "Tracker timestamp",
+    "Units": "ms"
+  },
+  "x_coordinate": {
+    "Units": "pixel"
+  },
+  "y_coordinate": {
+    "Units": "pixel"
+  },
+  "pupil_size": {
+    "Description": "Pupil area",
+    "Units": "arbitrary"
+  }
+}

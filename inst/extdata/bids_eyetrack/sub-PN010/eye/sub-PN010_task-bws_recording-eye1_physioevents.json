@@ -1,0 +1,11 @@
+{
+  "Columns": ["onset", "duration", "trial_type", "message"],
+  "OnsetSource": "timestamp",
+  "PhysioType": "eyetrack",
+  "onset": {
+    "Units": "ms"
+  },
+  "duration": {
+    "Units": "s"
+  }
+}

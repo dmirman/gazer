@@ -17,6 +17,8 @@ legend_positioning(pos, edge_color = "black", legend_fill = "white")
 A wrapper function to make setting legend position easier when using ggplot.
 }
 \examples{
-last_plot() + legend_positioning(c(0,1)) #put legend in upper left corner
-last_plot() + legend_positioning(c(1,0)) #put legend in lower right corner
+library(ggplot2)
+p <- ggplot(TargetFix, aes(Time, meanFix, color = Condition)) + stat_summary(fun = mean, geom = "line")
+p + legend_positioning(c(0,1)) #put legend in upper left corner
+p + legend_positioning(c(1,0)) #put legend in lower right corner
 }
