@@ -10,7 +10,7 @@ Authors@R: c(
   person("Matt", "Winn", email = "mwinn83@gmail.com", role = "aut"),
   person("Holger", "Mitterer", email = "holger.mitterer@um.edu.mt", role = "aut"))
 Description: Functions for reading and pre-processing eye tracking data.
-URL: http://github.com/dmirman/gazer
+URL: https://github.com/dmirman/gazer, https://jgeller112.r-universe.dev/gazer
 BugReports: http://github.com/dmirman/gazer/issues
 License: GPL-3
 Depends: R (>= 4.1.0)

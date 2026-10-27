@@ -61,13 +61,21 @@ read_bids_eyetrack <- function(path, eye = c("average", "left", "right", "both")
     paste(parts, collapse = "_")
   }, character(1))
 
+  # fread() needs R.utils for .gz input, so decompress with base R instead.
+  fread_tsv <- function(f, ...) {
+    if (!grepl("\\.gz$", f)) return(data.table::fread(f, sep = "\t", ...))
+    con <- gzfile(f, "rt")
+    on.exit(close(con))
+    data.table::fread(text = readLines(con), sep = "\t", ...)
+  }
+
   read_one <- function(f) {
     side <- sub("\\.tsv(\\.gz)?$", ".json", f)
     if (!file.exists(side)) stop("No JSON sidecar for ", basename(f), call. = FALSE)
     meta <- jsonlite::read_json(side, simplifyVector = TRUE)
     cols <- meta$Columns
     if (is.null(cols)) stop(basename(side), " has no `Columns` field.", call. = FALSE)
-    d <- data.table::fread(f, header = FALSE, col.names = cols, na.strings = c("n/a", "NA", ""))
+    d <- fread_tsv(f, header = FALSE, col.names = cols, na.strings = c("n/a", "NA", ""))
     # Times in ms. Pupil Labs exports are in ns, Tobii in us; without Units,
     # guess from the median step and SamplingFrequency.
     units <- meta$timestamp$Units
@@ -92,7 +100,7 @@ read_bids_eyetrack <- function(path, eye = c("average", "left", "right", "both")
     msgs <- NULL
     if (file.exists(ev_file)) {
       ev_meta <- jsonlite::read_json(sub("\\.tsv(\\.gz)?$", ".json", ev_file), simplifyVector = TRUE)
-      ev <- data.table::fread(ev_file, header = FALSE, col.names = ev_meta$Columns, na.strings = c("n/a", "NA", ""))
+      ev <- fread_tsv(ev_file, header = FALSE, col.names = ev_meta$Columns, na.strings = c("n/a", "NA", ""))
       on_ts <- is.null(ev_meta$OnsetSource) || identical(ev_meta$OnsetSource, "timestamp")
       ev$onset_ms <- if (on_ts) ev$onset * scale else min(d$timestamp) + ev$onset * 1000
       dur_ms <- if ("duration" %in% names(ev)) suppressWarnings(as.numeric(ev$duration)) * 1000 else NA_real_

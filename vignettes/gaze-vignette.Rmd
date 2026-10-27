@@ -9,6 +9,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r, include=FALSE}
+# Code is shown but not run: it needs the GitHub-only saccades package
+knitr::opts_chunk$set(eval = FALSE)
+```
+
 This is a basic example of pre-processing VWP data starting from gaze position samples. The data are from a semantic competition experiment where the distractors were either thematically (associate) or taxonomically related to the target (Mirman & Graziano, 2012).
 
 ## Initial set-up
