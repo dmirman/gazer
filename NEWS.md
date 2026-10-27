@@ -16,6 +16,20 @@
   `data-raw/make_example_bids.R` from `PN010BWS.asc.gz`).
 * jsonlite is now imported.
 
+## Build fixes
+
+* Fixes for the r-universe build failures; `R CMD check` now runs without
+  errors:
+  * vignette packages (cowplot, patchwork, tidyverse) are now in Suggests;
+  * the pupil vignette no longer runs `remotes::install_github()` while it
+    is built, which replaced the package being built with the GitHub copy;
+  * the gaze vignette uses `timebins`, the column `downsample_gaze()`
+    returns (it used `timebin`);
+  * examples: `code_poly()` uses `TargetFix` (the `Az` dataset doesn't
+    exist), `legend_positioning()` builds its own plot, and the
+    `compare_groups()` and `get_ranef()` examples are `\dontrun{}`, with the
+    code that fits the `get_ranef()` example model.
+
 # gazer 0.2.10
 
 * New `resample_gaze()`: brings each participant's data to a target sampling
