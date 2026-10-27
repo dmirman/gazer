@@ -8,7 +8,8 @@ baseline_correction_pupil(
   datafile,
   pupil_colname = "pupil",
   baseline_window = NA,
-  baseline_method = "sub"
+  baseline_method = "sub",
+  baseline_stat = "median"
 )
 }
 \arguments{
@@ -18,7 +19,9 @@ baseline_correction_pupil(
 
 \item{baseline_window}{user-specified threshold for baseline window.}
 
-\item{baseline}{correction method. Default is sub but can also include divisive}
+\item{baseline_method}{correction method. Default is sub but can also include divisive}
+
+\item{baseline_stat}{statistic for the baseline value: "median" (default) or "mean".}
 }
 \value{
 data frame containing baseline corrected data from event of interest

@@ -9,7 +9,8 @@ baseline_correction_pupil_msg(
   pupil_colname = NULL,
   baseline_dur = 500,
   event = "event",
-  baseline_method = "sub"
+  baseline_method = "sub",
+  baseline_stat = "median"
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ baseline_correction_pupil_msg(
 \item{event}{message name for stim onset}
 
 \item{baseline_method}{correction method. Default is sub but can also include divisive}
+
+\item{baseline_stat}{statistic for the baseline value: "median" (default) or "mean".}
 
 \item{message}{name of message column}
 }

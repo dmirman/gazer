@@ -6,12 +6,15 @@
 #' @param message name of message column
 #' @param event message name for stim onset
 #' @param baseline_method correction method. Default is sub but can also include divisive
+#' @param baseline_stat statistic for the baseline value: "median" (default) or "mean".
 #' @return data frame containing baseline corrected data from event of interest
 #' @export
-baseline_correction_pupil_msg<-function(datafile, pupil_colname=NULL, baseline_dur=500, event="event", baseline_method="sub")
+baseline_correction_pupil_msg<-function(datafile, pupil_colname=NULL, baseline_dur=500, event="event", baseline_method="sub", baseline_stat="median")
 {
+  baseline_stat <- match.arg(baseline_stat, c("median", "mean"))
+  baseline_fun <- if (baseline_stat == "mean") mean else stats::median
   if (baseline_method=="sub") {
-    message("Calculating median baseline from",":", event)
+    message("Calculating ", baseline_stat, " baseline from",":", event)
 
     event_time <- datafile %>%
       dplyr::group_by(subject, trial) %>%
@@ -25,7 +28,7 @@ baseline_correction_pupil_msg<-function(datafile, pupil_colname=NULL, baseline_d
       dplyr::filter(time >= event_offset_time - baseline_dur,
                     time <= event_offset_time) %>%
       dplyr::rename(pupil_avg = pupil_colname) %>%
-      dplyr::summarise(baseline = median(pupil_avg, na.rm=TRUE)) %>%
+      dplyr::summarise(baseline = baseline_fun(pupil_avg, na.rm=TRUE)) %>%
       dplyr::full_join(., datafile) %>%
       dplyr::ungroup()
 
@@ -42,7 +45,7 @@ baseline_correction_pupil_msg<-function(datafile, pupil_colname=NULL, baseline_d
   }
 #use grand average baseline instead of individual trial baseline to minimize bias
   if (baseline_method=="div") {
-    message("Calculating median baseline from",":", event)
+    message("Calculating ", baseline_stat, " baseline from",":", event)
 
     event_time <- datafile %>%
       dplyr::group_by(subject, trial) %>%
@@ -56,7 +59,7 @@ baseline_correction_pupil_msg<-function(datafile, pupil_colname=NULL, baseline_d
       dplyr::filter(time >= event_offset_time - baseline_dur,
                     time <= event_offset_time) %>%
       dplyr::rename(pupil_avg = pupil_colname) %>%
-      dplyr::summarise(baseline = median(pupil_avg, na.rm=TRUE)) %>%
+      dplyr::summarise(baseline = baseline_fun(pupil_avg, na.rm=TRUE)) %>%
       dplyr::full_join(., datafile)%>%
       dplyr::ungroup()
 

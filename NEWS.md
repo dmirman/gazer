@@ -1,3 +1,19 @@
+# gazer 0.2.10
+
+* New `resample_gaze()`: brings each participant's data to a target sampling
+  rate. Higher rates are downsampled by averaging consecutive samples (a bin
+  with any missing sample stays missing; blink flags and every event message
+  are kept). Lower rates are upsampled with `upsample_gaze()`, with new
+  samples interpolated from the recorded samples either side. At the same
+  rate, trials are put on a uniform grid with dropped samples inserted as
+  missing.
+
+* `baseline_correction_pupil_msg()` and `baseline_correction_pupil()` gain
+  `baseline_stat = c("median", "mean")`, choosing whether the baseline is
+  the median (default, unchanged) or the mean of the baseline period. Mathôt
+  & Vilotijević (2022) recommend a per-trial subtractive baseline using the
+  mean of a short baseline period.
+
 # gazer 0.2.9
 
 * README: updated install instructions (r-universe) and a summary of the
