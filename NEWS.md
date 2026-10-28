@@ -1,3 +1,9 @@
+# gazer 0.2.12
+
+* New `zscore_pupil()`: z-scores pupil size within each participant (default,
+  across all their trials) or within each trial. Use it last, to re-scale the
+  baseline-corrected pupil (`pupil_col = "baselinecorrectedp"`).
+
 # gazer 0.2.11
 
 * New `read_bids_eyetrack()`: reads BIDS eye-tracking data (BEP020
