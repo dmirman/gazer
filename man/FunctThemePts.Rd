@@ -7,7 +7,7 @@
 \format{
 A data frame with 8199 rows and 8 variables:
 \describe{
-\item{Subject}{subject ID, factor}
+\item{subj}{subject ID, factor}
 \item{Condition}{semantic relatedness condition: Function (e.g., broom - sponge) or Thematic (e.g., broom - dustpan)}
 \item{Object}{object type: Target, semantically related Competitor, or Unrelated}
 
@@ -15,6 +15,7 @@ A data frame with 8199 rows and 8 variables:
 \item{meanFix}{fixation proportion (subject mean): proportion of correct-response trials on which the object was fixated}
 \item{sumFix}{fixation sum: number of correct-response trials on which the object was fixated (i.e., numerator for meanFix)}
 \item{N}{number of correct-response trials (i.e., denominator for meanFix)}
+\item{timeBin}{time bin number}
 }
 }
 \source{

@@ -1,5 +1,8 @@
 #' Turns pupil sizes with blinks NA and linearly interpolates values
 #' @param datafile data frame.
+#' @param pupil,subject,trial not used: the data must have columns named
+#'   `pupil`, `subject`, `trial`, `blink` (and `extendpupil` if
+#'   `extendblinks = TRUE`).
 #' @param extendblinks blinks already extended  in data frame 
 #' @param type type of interpolation (linear or cubic)
 #' @param maxgap max number of NAs to interpolate. 

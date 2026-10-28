@@ -3,7 +3,6 @@
 #' @param datafile raw pupil data
 #' @param pupil_colname name of your pupil colname you want baseline corrected
 #' @param baseline_dur duration of baseline period from stim offset
-#' @param message name of message column
 #' @param event message name for stim onset
 #' @param baseline_method correction method. Default is sub but can also include divisive
 #' @param baseline_stat statistic for the baseline value: "median" (default) or "mean".

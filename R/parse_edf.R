@@ -8,14 +8,12 @@
 #'@import dplyr
 #'@importFrom data.table as.data.table
 #' @param file_list directory to edf files
-#' @param output.dir directory to save new cleaned files
+#' @param output_dir directory to save new cleaned files
 #' @param type include whether you want to parse edf pupil data (pupil) or vwp (fixations)
 #' @export
 
 parse_edf <- function (file_list, output_dir, type="pupil") {
 
-  library(edfR)#use edfR to read in the edf files
-  library(data.table)
 
   if (type=="pupil") {
     
@@ -24,8 +22,8 @@ parse_edf <- function (file_list, output_dir, type="pupil") {
     for (sub in 1:subs) {
 
       subject = basename(file_list[sub])
-      all=edf.trials(file_list[sub], samples=TRUE)
-      #samps_all <- edf.batch(file_list[sub], samples = TRUE, do.plot=FALSE)
+      all=edf_fun("edf.trials")(file_list[sub], samples=TRUE)
+      #samps_all <- edf_fun("edf.batch")(file_list[sub], samples = TRUE, do.plot=FALSE)
 
       msg<-all$messages
 
@@ -91,8 +89,8 @@ parse_edf <- function (file_list, output_dir, type="pupil") {
     for (sub in 1:subs) {
 
       subject = basename(file_list[sub])
-      #samps_all <- edf.trials(file_list[sub], samples=TRUE)
-      samps_all <- edf.batch(file_list[sub], samples = TRUE, do.plot=FALSE)
+      #samps_all <- edf_fun("edf.trials")(file_list[sub], samples=TRUE)
+      samps_all <- edf_fun("edf.batch")(file_list[sub], samples = TRUE, do.plot=FALSE)
 
       samp <- samps_all[[1]][["samples"]]
 

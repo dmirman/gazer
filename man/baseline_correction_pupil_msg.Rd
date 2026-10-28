@@ -25,8 +25,6 @@ baseline_correction_pupil_msg(
 \item{baseline_method}{correction method. Default is sub but can also include divisive}
 
 \item{baseline_stat}{statistic for the baseline value: "median" (default) or "mean".}
-
-\item{message}{name of message column}
 }
 \value{
 data frame containing baseline corrected data from event of interest

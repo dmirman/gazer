@@ -1,4 +1,5 @@
 #' Calculate percent missing data by subject and by trial
+#' @param datafile data frame with subject, trial and pupil columns
 #' @param missingthresh user-specified threshold for missing data. set to .2 
 #' @param pupil name of pupil column
 #' @export

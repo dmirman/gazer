@@ -20,10 +20,6 @@
 #' WordLearnEx.gca <- code_poly(df=WordLearnEx, predictor="Block", poly.order=2)
 #' TargetFix.gca <- code_poly(df=TargetFix, predictor="Time", poly.order=2, orthogonal=FALSE)
 code_poly <- function(df=NULL, predictor=NULL, poly.order=NULL, orthogonal=TRUE, draw.poly=TRUE){
-  if (draw.poly){
-    require(ggplot2)
-  }
-
   # convert choice for orthogonal into choice for raw
   raw <- (orthogonal-1)^2
 

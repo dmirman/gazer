@@ -18,6 +18,7 @@ LazyData: true
 Imports:
     data.table,
     dplyr,
+    janitor,
     jsonlite,
     ggplot2,
     purrr,
@@ -32,6 +33,7 @@ Suggests:
     knitr,
     lme4,
     patchwork,
+    pbkrtest,
     rmarkdown,
     saccades,
     tidyverse

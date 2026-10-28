@@ -15,9 +15,9 @@ parse_edf(file_list, output_dir, type = "pupil")
 \arguments{
 \item{file_list}{directory to edf files}
 
-\item{type}{include whether you want to parse edf pupil data (pupil) or vwp (fixations)}
+\item{output_dir}{directory to save new cleaned files}
 
-\item{output.dir}{directory to save new cleaned files}
+\item{type}{include whether you want to parse edf pupil data (pupil) or vwp (fixations)}
 }
 \description{
 Take EDF files and return data that is in format usable for gazeR

@@ -15,13 +15,13 @@ process_all_subjects_PL(
 
 \item{output_dir}{Directory for outputs. Defaults to \code{file.path(root_dir, "processed")}.}
 
-\item{...}{Extra arguments forwarded to \code{\link{read_pl_subject}} (e.g., start_mode, start_messages).}
+\item{...}{Extra arguments forwarded to \code{\link{parse_pl}} (e.g., start_mode, start_messages).}
 }
 \value{
 Invisibly returns a combined tibble of all processed subjects.
 }
 \description{
-Recursively finds immediate subfolders, runs \code{\link{read_pl_subject}} on each,
+Recursively finds immediate subfolders, runs \code{\link{parse_pl}} on each,
 writes per-subject CSVs and a combined CSV, and invisibly returns the combined tibble.
 }
 \examples{

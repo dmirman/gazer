@@ -22,7 +22,7 @@ read_fixation_report(
 
 \item{plot_fix_scatter}{logical indicating whether a scatterplot of fixations should be created}
 
-\item{page}{outputs a plots 4 x 3 and displays the first page. Change number to see other pages if you have more Ps}
+\item{pages}{outputs a plots 4 x 3 and displays the first page. Change number to see other pages if you have more Ps}
 }
 \value{
 gaze data frame containing fixation report

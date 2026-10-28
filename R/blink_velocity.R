@@ -6,7 +6,7 @@
 
 #' @param df data frame.
 #' @param neg_velocity_thresh threshold for onset of blinks neg number here we use default of -5
-#' @param pos_velocity_thres threshold for offset of blinks neg number here we use default of 5
+#' @param pos_velocity_thresh threshold for offset of blinks neg number here we use default of 5
 #' @param fillback extend blinks backward
 #' @param fillforward extend blinks forward
 #' @param hz recording frequency of ET

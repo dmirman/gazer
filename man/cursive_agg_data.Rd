@@ -5,8 +5,9 @@
 \alias{cursive_agg_data}
 \title{Judgments to cursive vs. type-print words in LDT}
 \format{
-A data frame with 52 rows and 3 variables
+A data frame with 4 variables
 \describe{
+\item{subject}{subject ID (edf file name)}
 \item{script}{Cursive or Print}
 \item{timebins}{trial onset}
 \item{aggbaseline}{baseline corrected pupil size}

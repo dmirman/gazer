@@ -28,7 +28,16 @@
   * examples: `code_poly()` uses `TargetFix` (the `Az` dataset doesn't
     exist), `legend_positioning()` builds its own plot, and the
     `compare_groups()` and `get_ranef()` examples are `\dontrun{}`, with the
-    code that fits the `get_ranef()` example model.
+    code that fits the `get_ranef()` example model;
+  * `get_pvalues(method = "KR")` checks for pbkrtest (now in Suggests) and
+    its example only runs when pbkrtest is installed;
+  * janitor, used by `parse_pl()`, is now in Imports;
+  * no `library()`/`require()` calls in package code. edfR is not a
+    dependency: the legacy `.edf` readers (`parse_edf()`,
+    `parse_edf_messages()`, `find_messages_edf()`) look it up when called
+    and otherwise point to `read_asc()`;
+  * documentation now matches the functions and datasets (argument names,
+    the `FunctThemePts` and `cursive_agg_data` columns, a broken link).
 
 # gazer 0.2.10
 

@@ -36,7 +36,7 @@
 #'
 #' @format A data frame with 8199 rows and 8 variables:
 #' \describe{
-#'  \item{Subject}{subject ID, factor}
+#'  \item{subj}{subject ID, factor}
 #'  \item{Condition}{semantic relatedness condition: Function (e.g., broom - sponge) or Thematic (e.g., broom - dustpan)}
 #'  \item{Object}{object type: Target, semantically related Competitor, or Unrelated}
 #'
@@ -44,6 +44,7 @@
 #'  \item{meanFix}{fixation proportion (subject mean): proportion of correct-response trials on which the object was fixated}
 #'  \item{sumFix}{fixation sum: number of correct-response trials on which the object was fixated (i.e., numerator for meanFix)}
 #'  \item{N}{number of correct-response trials (i.e., denominator for meanFix)}
+#'  \item{timeBin}{time bin number}
 #'  }
 #' @source Kalenine, Mirman, & Buxbaum (2012, Front. Hum. Neurosci., 6:106, 1-12) <http://journal.frontiersin.org/Journal/10.3389/fnhum.2012.00106>
 "FunctThemePts"
@@ -100,9 +101,9 @@
 #' Judgments to cursive vs. type-print words in LDT
 #'
 #' Aggregate baseline corrected pupillary data for a LDT task that required participants to judge the lexical status of cursive and type-print stimuli.
-#' @format A data frame with 52 rows and 3 variables
+#' @format A data frame with 4 variables
 #' \describe{
-#
+#'  \item{subject}{subject ID (edf file name)}
 #'  \item{script}{Cursive or Print}
 #'  \item{timebins}{trial onset}
 #'  \item{aggbaseline}{baseline corrected pupil size}

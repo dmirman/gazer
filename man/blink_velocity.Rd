@@ -22,13 +22,13 @@ blink_velocity(
 
 \item{neg_velocity_thresh}{threshold for onset of blinks neg number here we use default of -5}
 
+\item{pos_velocity_thresh}{threshold for offset of blinks neg number here we use default of 5}
+
 \item{fillback}{extend blinks backward}
 
 \item{fillforward}{extend blinks forward}
 
 \item{hz}{recording frequency of ET}
-
-\item{pos_velocity_thres}{threshold for offset of blinks neg number here we use default of 5}
 }
 \value{
 data frame containing pupil values where blinks have been linear interpolated.

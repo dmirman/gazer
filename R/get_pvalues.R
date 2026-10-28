@@ -16,7 +16,7 @@
 #' require(lme4)
 #' model <- lmer(Reaction ~ Days + (Days | Subject), sleepstudy)
 #' get_pvalues(model)
-#' get_pvalues(model, "KR")
+#' if (requireNamespace("pbkrtest", quietly = TRUE)) get_pvalues(model, "KR")
 get_pvalues <- function(model, method = "normal") {
   # Extract fixed effect coefficients from model
   coefs <- data.frame(coef(summary(model)))
@@ -40,6 +40,9 @@ get_pvalues <- function(model, method = "normal") {
     #run a minimal KRmodcomp
     if (!requireNamespace("lme4", quietly = TRUE)) {
       stop("get_pvalues(method = \"KR\") needs the lme4 package: install.packages(\"lme4\").", call. = FALSE)
+    }
+    if (!requireNamespace("pbkrtest", quietly = TRUE)) {
+      stop("get_pvalues(method = \"KR\") needs the pbkrtest package: install.packages(\"pbkrtest\").", call. = FALSE)
     }
     restrictionMatrix <- cbind(t(rep(0, length(lme4::fixef(model))-1)), 1)
     kr <- pbkrtest::KRmodcomp(model, restrictionMatrix)

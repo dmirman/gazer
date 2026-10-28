@@ -12,7 +12,6 @@
 #' @return data frame containing pupil data
 merge_pupil <- function (file_list, blink_colname="", pupil_colname="", filetype="sr") {  
   #file list is path to .xls files
-  library(data.table)
 
   if (filetype=="sr") {
     

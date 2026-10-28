@@ -18,6 +18,10 @@ interpolate_pupil(
 \arguments{
 \item{datafile}{data frame.}
 
+\item{pupil, subject, trial}{not used: the data must have columns named
+\code{pupil}, \code{subject}, \code{trial}, \code{blink} (and \code{extendpupil} if
+\code{extendblinks = TRUE}).}
+
 \item{extendblinks}{blinks already extended  in data frame}
 
 \item{maxgap}{max number of NAs to interpolate.}

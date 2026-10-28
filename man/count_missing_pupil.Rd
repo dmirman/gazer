@@ -7,6 +7,8 @@
 count_missing_pupil(datafile, pupil = "pupil", missingthresh = 0.2)
 }
 \arguments{
+\item{datafile}{data frame with subject, trial and pupil columns}
+
 \item{pupil}{name of pupil column}
 
 \item{missingthresh}{user-specified threshold for missing data. set to .2}

@@ -15,7 +15,7 @@ find_messages_edf <- function(file_list,varnames,patterns, output_dir)
   for (sub in 1:subs) {
     subject = basename(file_list[sub]) # get id from file
 
-    msg=edf.messages.c(file_list[sub])
+    msg=edf_fun("edf.messages.c")(file_list[sub])
 
     messagelist = list()
 

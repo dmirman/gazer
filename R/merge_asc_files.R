@@ -16,7 +16,6 @@
 
 merge_asc_files <- function(dirList, homeDir = "./", dataType = c("fixation", "sample"))
 {
-  library(data.table)
   dataType <- match.arg(dataType)
   mergeBy <- if (dataType == "sample") c("trial", "time") else "trial"
   merged = 0

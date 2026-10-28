@@ -6,7 +6,7 @@
 #' @param screen_size size of the screen in pixels. Used to compute track quality diagnostics. Defaults to c(1024, 768)
 #' @param name_changes set of variable name pairs for improving variable names. Should be formatted as named character vector with new names as values and old names as names; see plyr::rename()
 #' @param plot_fix_scatter logical indicating whether a scatterplot of fixations should be created
-#' @param page outputs a plots 4 x 3 and displays the first page. Change number to see other pages if you have more Ps 
+#' @param pages outputs a plots 4 x 3 and displays the first page. Change number to see other pages if you have more Ps 
 #' @export
 #' @return gaze data frame containing fixation report
 read_fixation_report <- function(filename, screen_size=c(1024, 768),
