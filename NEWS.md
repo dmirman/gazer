@@ -3,6 +3,11 @@
 * New `zscore_pupil()`: z-scores pupil size within each participant (default,
   across all their trials) or within each trial. Use it last, to re-scale the
   baseline-corrected pupil (`pupil_col = "baselinecorrectedp"`).
+* New `pupil_to_mm()`: converts pupil size in tracker units (area or
+  diameter) to diameter in mm, using an artificial pupil of known size
+  recorded with the same setup (or a known scale factor).
+* New `time_to_ms()`: converts time stamps in s, us, ns or sample numbers to
+  ms.
 
 # gazer 0.2.11
 
