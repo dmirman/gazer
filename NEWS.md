@@ -21,6 +21,10 @@
   `pupil`, `x` and `y` from `read_asc()`, `read_bids_eyetrack()` and
   `read_tobii_prolab()` with `eye = "average"` or `"both"` (before, both
   eyes had to be valid). `blink` is still 1 if either eye is in a blink.
+* New `pupil_cor()`: correlation between the left and right pupil per
+  participant (or trial), over samples where both eyes are valid. A check
+  before averaging the eyes: a low correlation means one eye was tracked
+  poorly.
 
 # gazer 0.2.11
 
