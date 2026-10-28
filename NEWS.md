@@ -8,6 +8,13 @@
   recorded with the same setup (or a known scale factor).
 * New `time_to_ms()`: converts time stamps in s, us, ns or sample numbers to
   ms.
+* New `read_tobii_prolab()`: reads Tobii Pro Lab data exports (.tsv) in the
+  layout of `read_asc()`. Several participants per file; time converted to
+  ms from the column's unit; invalid samples set to missing; eyes averaged
+  or kept separately; events become messages; trials follow the presented
+  stimulus (calibration dropped) or start at listed events; `blink` from Pro
+  Lab's Blink classification, with eye openness kept; decimal commas
+  handled.
 
 # gazer 0.2.11
 
