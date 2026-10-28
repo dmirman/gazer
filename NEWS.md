@@ -21,6 +21,11 @@
   `pupil`, `x` and `y` from `read_asc()`, `read_bids_eyetrack()` and
   `read_tobii_prolab()` with `eye = "average"` or `"both"` (before, both
   eyes had to be valid). `blink` is still 1 if either eye is in a blink.
+* `resample_gaze()` now upsamples (and fills dropped samples) at any rate,
+  including rates whose step isn't a whole number of ms, such as Tobii's
+  600, 300 or 120 Hz: each gap between recorded samples gets evenly spaced
+  new samples, so they stay aligned with the tracker's clock. Whole-ms
+  rates give the same results as before.
 * New `pupil_cor()`: correlation between the left and right pupil per
   participant (or trial), over samples where both eyes are valid. A check
   before averaging the eyes: a low correlation means one eye was tracked

@@ -62,8 +62,11 @@ samples the tracker dropped as \code{NA} (never interpolated), ready for the
 usual blink and interpolation steps.
 }
 
-Inserted samples are flagged in a \code{resampled} column. Upsampling and the
-uniform grid need a whole-millisecond step (e.g. 1000, 500, 250 Hz).
+Inserted samples are flagged in a \code{resampled} column. Any target rate
+works. With a whole-millisecond step (e.g. 1000, 500, 250 Hz) samples are
+placed on an integer-ms grid; otherwise (e.g. 600 Hz, 1.667 ms) each gap
+between recorded samples gets \code{round(gap / step) - 1} evenly spaced new
+samples, which stays aligned with the tracker's clock.
 }
 \examples{
 x <- data.frame(subject = "s1", trial = 1, time = 0:9,

@@ -18,8 +18,11 @@
 #'   samples the tracker dropped as `NA` (never interpolated), ready for the
 #'   usual blink and interpolation steps.
 #'
-#' Inserted samples are flagged in a `resampled` column. Upsampling and the
-#' uniform grid need a whole-millisecond step (e.g. 1000, 500, 250 Hz).
+#' Inserted samples are flagged in a `resampled` column. Any target rate
+#' works. With a whole-millisecond step (e.g. 1000, 500, 250 Hz) samples are
+#' placed on an integer-ms grid; otherwise (e.g. 600 Hz, 1.667 ms) each gap
+#' between recorded samples gets `round(gap / step) - 1` evenly spaced new
+#' samples, which stays aligned with the tracker's clock.
 #'
 #' @param x data frame with `subject`, `trial` and `time` (ms) columns.
 #' @param target_hz target sampling rate in Hz.
@@ -83,8 +86,16 @@ resample_gaze <- function(x, target_hz, hz = NULL,
       return(res)
     }
     if ((1000 / target_hz) %% 1 != 0) {
-      stop("Upsampling and gap filling need a whole-millisecond step (e.g. 1000, 500, 250 Hz); ",
-           target_hz, " Hz gives ", round(1000 / target_hz, 3), " ms.", call. = FALSE)
+      # Steps that aren't whole ms (e.g. 600 Hz = 1.667 ms): insert samples
+      # between each pair of recorded ones
+      up <- resample_up_between(sub, 1000 / target_hz, value_cols, event_cols)
+      if (rate < target_hz && interpolate) {
+        for (tr in unique(up$trial)) {
+          idx <- which(up$trial == tr)
+          for (v in value_cols) up[[v]][idx] <- fill_between(up[[v]][idx], up$time[idx], up$resampled[idx])
+        }
+      }
+      return(up)
     }
     sub$time <- as.integer(round(sub$time))
     up <- upsample_gaze(sub, pupil_cols = pupil_cols, gaze_cols = gaze_cols,
@@ -123,6 +134,31 @@ resample_down <- function(sub, target_hz, pupil_cols, value_cols, blink_cols, ev
   res[, time := .bin][, .bin := NULL]
   data.table::setcolorder(res, intersect(names(sub), names(res)))
   as.data.frame(res)
+}
+
+# Upsampling or gap filling to a step that isn't a whole number of ms: each
+# gap between consecutive recorded samples gets round(gap / step) - 1 evenly
+# spaced new samples (so there is no drift against the tracker's clock).
+# New samples copy the other columns from the previous recorded sample;
+# value and event columns are left NA.
+resample_up_between <- function(sub, step, value_cols, event_cols) {
+  sub <- sub[order(sub$trial, sub$time), , drop = FALSE]
+  parts <- lapply(split(seq_len(nrow(sub)), sub$trial), function(i) {
+    t <- sub$time[i]
+    n_new <- if (length(t) > 1) pmax(0L, as.integer(round(diff(t) / step)) - 1L) else integer()
+    src <- rep(i, c(n_new, 0L) + 1L)        # each recorded row, then its inserted copies
+    k <- sequence(c(n_new, 0L) + 1L) - 1L   # 0 = recorded, 1.. = inserted after it
+    gap <- c(diff(t), 0)[match(src, i)]
+    out <- sub[src, , drop = FALSE]
+    ins <- k > 0
+    out$time[ins] <- out$time[ins] + k[ins] * gap[ins] / (n_new[match(src[ins], i)] + 1)
+    for (v in c(value_cols, event_cols)) out[[v]][ins] <- NA
+    out$resampled <- ins
+    out
+  })
+  out <- do.call(rbind, parts)
+  rownames(out) <- NULL
+  out
 }
 
 # Fill inserted samples by linear interpolation between the recorded samples
