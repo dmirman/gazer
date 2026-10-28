@@ -2,13 +2,15 @@
 % Please edit documentation in R/pupil_cor.R
 \name{pupil_cor}
 \alias{pupil_cor}
-\title{Correlation between the left and right pupil}
+\title{Agreement between the left and right pupil}
 \usage{
 pupil_cor(
   x,
   left = "pupil_left",
   right = "pupil_right",
   by = "subject",
+  within = "trial",
+  icc_type = c("agreement", "consistency"),
   summary = FALSE
 )
 }
@@ -18,34 +20,74 @@ pupil_cor(
 
 \item{left, right}{left and right pupil columns.}
 
-\item{by}{grouping: \code{"subject"} (default), \code{"trial"} (each trial of each
-participant), or a vector of column names.}
+\item{by}{grouping, one value per group: \code{"subject"} (default), \code{"trial"}
+(each trial of each participant), a vector of column names, or \code{NULL}
+for one value for all of \code{x}.}
 
-\item{summary}{if \code{TRUE}, return one row per group instead of adding a
-column to \code{x}.}
+\item{within}{column(s) defining the unit whose mean is removed (within
+each \code{by} group): \code{"trial"} (default),
+or \code{NULL} for none (a plain ICC and Pearson correlation). Ignored when
+it is already part of \code{by}. With \verb{by = NULL, within = "subject"},
+\code{pupil_r} is the usual rmcorr across participants.}
+
+\item{icc_type}{\code{"agreement"} (default) or \code{"consistency"}.}
+
+\item{summary}{if \code{TRUE}, return one row per group instead of adding
+columns to \code{x}.}
 }
 \value{
-With \code{summary = FALSE} (default), \code{x} with a \code{pupil_r} column (the
-group's correlation, repeated on each row). With \code{summary = TRUE}, a
-tibble with the grouping columns, \code{pupil_r} and \code{n_both} (samples with
-both eyes valid). Groups with fewer than 3 such samples, or no
+With \code{summary = FALSE} (default), \code{x} with \code{pupil_icc} and
+\code{pupil_r} columns (the group's values, repeated on each row). With
+\code{summary = TRUE}, a tibble with the grouping columns, \code{pupil_icc},
+\code{pupil_r}, \code{n_both} (samples with both eyes valid), \code{n_units} (\code{within} units with
+such samples) and \code{df}. Groups with fewer than 3 such samples, or no
 variation, get \code{NA}.
 }
 \description{
 A check on binocular data before the eyes are averaged. The two pupils
-respond together, so their traces should be highly correlated (typically
-r > .9). A low correlation for a participant (or trial) means one eye was
-tracked poorly, and averaging the eyes, or filling one eye's gaps with the
-other (\code{\link[=compute_monocular_mean]{compute_monocular_mean()}}), would mix in that noise; consider
-using the better eye instead.
+respond together, so their traces should agree closely (typically > .9).
+A low value for a participant (or trial) means one eye was tracked
+poorly, and averaging the eyes, or filling one eye's gaps with the other
+(\code{\link[=compute_monocular_mean]{compute_monocular_mean()}}), would mix in that noise; consider using the
+better eye instead.
 }
 \details{
-The Pearson correlation is computed over samples where both eyes are
-valid, within each group.
+Both are computed over whole trials, over samples where both eyes are
+valid, and returned side by side:
+\itemize{
+\item \code{pupil_icc}: intraclass correlation with the two eyes as raters and
+the samples as targets (McGraw & Wong, 1996). \code{icc_type = "agreement"}
+(ICC(A,1), default) is lowered by a systematic difference between the
+eyes (e.g. one pupil read 5\% larger), which matters when one eye fills
+the other's gaps; \code{"consistency"} (ICC(C,1)) ignores it. The mean of
+both eyes is removed in each \code{within} unit (each trial; the same amount
+from each eye, so their difference is kept).
+\item \code{pupil_r}: repeated-measures correlation (rmcorr; Bakdash & Marusich,
+2017). Each eye's mean is removed in each \code{within} unit, and the eyes
+are correlated on what is left: do they rise and fall together within
+trials? A constant difference between the eyes does not lower it.
+}
+
+Removing trial means keeps shifts in pupil size from one trial to the
+next, which move both eyes, from inflating either value.
+
+\code{df} is that of rmcorr, samples minus units minus 1 (n - 2 for a plain
+Pearson). Samples are autocorrelated, so they overstate the information
+in the data; use the values as a descriptive check, not for a test.
 }
 \examples{
 x <- data.frame(subject = rep(c("s1", "s2"), each = 50), trial = 1,
                 pupil_left = c(5 + sin(1:50 / 5), 5 + rnorm(50)))
 x$pupil_right <- c(5 + sin(1:50 / 5) + rnorm(50, 0, 0.05), 5 + rnorm(50))
 pupil_cor(x, summary = TRUE)   # s1 high, s2 near 0
+pupil_cor(x, by = NULL, within = "subject", summary = TRUE)   # across participants
+}
+\references{
+Bakdash, J. Z., & Marusich, L. R. (2017). Repeated measures
+correlation. \emph{Frontiers in Psychology, 8}, 456.
+\doi{10.3389/fpsyg.2017.00456}
+
+McGraw, K. O., & Wong, S. P. (1996). Forming inferences about some
+intraclass correlation coefficients. \emph{Psychological Methods, 1}(1),
+30-46. \doi{10.1037/1082-989X.1.1.30}
 }

@@ -1,3 +1,15 @@
+# gazer 0.2.14
+
+* `pupil_cor()` now returns two whole-trial measures of left-right
+  agreement: `pupil_icc`, an intraclass correlation (ICC(A,1) agreement,
+  lowered when one eye reads larger; `icc_type = "consistency"` for
+  ICC(C,1)), and `pupil_r`, now a repeated-measures correlation (rmcorr: do
+  the eyes rise and fall together within trials?). Trial means are removed
+  for both (`within = "trial"`, so `x` needs a `trial` column), and
+  trial-to-trial shifts in pupil size no longer inflate them. `within =
+  NULL` gives the plain Pearson correlation of 0.2.12. `by = NULL, within =
+  "subject"` gives one rmcorr across participants.
+
 # gazer 0.2.13
 
 * Smaller package (about 33 MB to a few MB): the large example sample files
