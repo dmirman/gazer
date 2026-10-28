@@ -13,9 +13,10 @@
 #' * **Pupil and gaze:** `Pupil diameter left/right [mm]` and the per-eye
 #'   `Gaze point left/right X/Y` columns, falling back to the combined
 #'   `Gaze point X/Y`. Samples whose `Validity left/right` is not "Valid"
-#'   are `NA`. `eye` works as in [read_asc()]: `"average"` (mean of both
-#'   eyes where both are valid), `"left"`, `"right"` or `"both"`. Pupil is in
-#'   mm.
+#'   are `NA`. `eye` works as in [read_asc()]: `"average"`, `"left"`,
+#'   `"right"` or `"both"`. With `"average"` and `"both"`, `pupil`, `x` and
+#'   `y` are the monocular mean ([compute_monocular_mean()]): both eyes'
+#'   mean, or the one valid eye. Pupil is in mm.
 #' * **Events:** rows with an `Event` (and `Event value`) become messages,
 #'   attached to the first sample at or after them. Rows from other sensors
 #'   (mouse, keyboard) are dropped.
@@ -126,10 +127,8 @@ read_tobii_prolab <- function(file, eye = c("average", "left", "right", "both"),
   has_l <- any(!is.na(L$pupil)); has_r <- any(!is.na(R$pupil))
   out <- data.table::data.table(subject = samp$participant, recording = samp$recording, tracker_time = samp$ts,
                                 stimulus = if ("stimulus" %in% names(samp)) samp$stimulus else NA_character_)
-  both_ok <- !is.na(L$pupil) & !is.na(R$pupil)
-  avg <- function(a, b) ifelse(both_ok, (a + b) / 2, NA_real_)
   pick <- if (eye %in% c("left", "right")) eye else if (has_l && has_r) "average" else if (has_l) "left" else "right"
-  src_eye <- switch(pick, left = L, right = R, average = list(pupil = avg(L$pupil, R$pupil), x = avg(L$x, R$x), y = avg(L$y, R$y)))
+  src_eye <- switch(pick, left = L, right = R, average = list(pupil = compute_monocular_mean(L$pupil, R$pupil), x = compute_monocular_mean(L$x, R$x), y = compute_monocular_mean(L$y, R$y)))
   out$pupil <- src_eye$pupil; out$x <- src_eye$x; out$y <- src_eye$y
   if (eye == "both") {
     out$pupil_left <- L$pupil; out$pupil_right <- R$pupil

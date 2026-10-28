@@ -34,8 +34,8 @@ A tibble with one row per sample:
 \item \code{trial}: trial number (one per \code{TRIALID}).
 \item \code{time}: ms from the start of recording in the trial (\verb{!MODE RECORD}).
 \item \code{pupil}: pupil size in tracker units (area or diameter, see
-\code{asc_info}); \code{NA} when missing. For \code{eye = "average"}/\code{"both"}, the mean
-of both eyes where both are valid.
+\code{asc_info}); \code{NA} when missing. For \code{eye = "average"}/\code{"both"}, the
+monocular mean of the two eyes.
 \item \code{x}, \code{y}: gaze position in screen pixels; \code{NA} when missing. Averaged
 like \code{pupil}.
 \item \code{blink}: 1 during a blink, 0 otherwise. For \code{eye = "average"}/\code{"both"},
@@ -79,9 +79,10 @@ left out of the sample data but kept in the full message table.
 1 during a blink). Pupil values of 0 and missing gaze (\code{.}) become \code{NA}.
 \item \strong{Binocular data} are handled with \code{eye}: \code{"average"}, \code{"left"},
 \code{"right"}, or \code{"both"} (per-eye columns plus the average). With
-\code{"average"} and \code{"both"}, \code{pupil}, \code{x} and \code{y} are the \strong{mean of the two
-eyes}, computed only where both eyes are valid (otherwise \code{NA}), and
-\code{blink} is 1 if \strong{either} eye is in a blink.
+\code{"average"} and \code{"both"}, \code{pupil}, \code{x} and \code{y} are the \strong{monocular
+mean} (\code{\link[=compute_monocular_mean]{compute_monocular_mean()}}), as EyeLink reports the average eye:
+the mean of both eyes, or the value of the one valid eye (\code{NA} only if
+neither is valid), and \code{blink} is 1 if \strong{either} eye is in a blink.
 }
 }
 \examples{

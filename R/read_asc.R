@@ -27,9 +27,10 @@
 #'   1 during a blink). Pupil values of 0 and missing gaze (`.`) become `NA`.
 #' * **Binocular data** are handled with `eye`: `"average"`, `"left"`,
 #'   `"right"`, or `"both"` (per-eye columns plus the average). With
-#'   `"average"` and `"both"`, `pupil`, `x` and `y` are the **mean of the two
-#'   eyes**, computed only where both eyes are valid (otherwise `NA`), and
-#'   `blink` is 1 if **either** eye is in a blink.
+#'   `"average"` and `"both"`, `pupil`, `x` and `y` are the **monocular
+#'   mean** ([compute_monocular_mean()]), as EyeLink reports the average eye:
+#'   the mean of both eyes, or the value of the one valid eye (`NA` only if
+#'   neither is valid), and `blink` is 1 if **either** eye is in a blink.
 #'
 #' @param file path to an `.asc` file (may be gzipped).
 #' @param eye which eye to use for binocular recordings: `"average"`,
@@ -45,8 +46,8 @@
 #'   * `trial`: trial number (one per `TRIALID`).
 #'   * `time`: ms from the start of recording in the trial (`!MODE RECORD`).
 #'   * `pupil`: pupil size in tracker units (area or diameter, see
-#'     `asc_info`); `NA` when missing. For `eye = "average"`/`"both"`, the mean
-#'     of both eyes where both are valid.
+#'     `asc_info`); `NA` when missing. For `eye = "average"`/`"both"`, the
+#'     monocular mean of the two eyes.
 #'   * `x`, `y`: gaze position in screen pixels; `NA` when missing. Averaged
 #'     like `pupil`.
 #'   * `blink`: 1 during a blink, 0 otherwise. For `eye = "average"`/`"both"`,
@@ -132,8 +133,9 @@ read_asc <- function(file,
 
   # Pick or combine eyes
   if (binocular) {
-    both_valid <- !is.na(samp$pupil_left) & !is.na(samp$pupil_right)
-    avg <- function(a, b) ifelse(both_valid, (a + b) / 2, NA_real_)
+    # Monocular mean, as EyeLink reports the average eye: both eyes' mean, or
+    # the one valid eye
+    avg <- compute_monocular_mean
     if (eye %in% c("average", "both")) {
       samp$pupil <- avg(samp$pupil_left, samp$pupil_right)
       samp$x <- avg(samp$x_left, samp$x_right)

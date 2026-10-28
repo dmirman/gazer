@@ -15,8 +15,9 @@
 #'   without units, from the step between samples and `SamplingFrequency`.
 #' * **Eyes:** recordings of the left and right eye (e.g. `recording-eye1`
 #'   and `recording-eye2`, identified by `RecordedEye` in the sidecar) are
-#'   merged by timestamp. `eye` works as in [read_asc()]: `"average"` (mean
-#'   of both eyes where both are valid; `blink` is 1 if either eye blinks),
+#'   merged by timestamp. `eye` works as in [read_asc()]: `"average"`
+#'   (monocular mean: both eyes' mean, or the one valid eye; `blink` is 1 if
+#'   either eye blinks),
 #'   `"left"`, `"right"`, or `"both"` (per-eye columns plus the average).
 #' * **Events:** rows of `*_physioevents.tsv.gz` with a `message` are attached
 #'   to the first sample at or after their onset; rows with
@@ -136,8 +137,7 @@ read_bids_eyetrack <- function(path, eye = c("average", "left", "right", "both")
       data.table::setnames(L, setdiff(keepL, "timestamp"), paste0(setdiff(keepL, "timestamp"), "_left"))
       data.table::setnames(R, setdiff(keepR, "timestamp"), paste0(setdiff(keepR, "timestamp"), "_right"))
       d <- merge(L, R, by = "timestamp", all = TRUE)
-      both_ok <- !is.na(d$pupil_left) & !is.na(d$pupil_right)
-      avg <- function(a, b) ifelse(both_ok, (a + b) / 2, NA_real_)
+      avg <- compute_monocular_mean
       if (eye %in% c("average", "both")) {
         d$pupil <- avg(d$pupil_left, d$pupil_right)
         d$x <- avg(d$x_left, d$x_right); d$y <- avg(d$y_left, d$y_right)

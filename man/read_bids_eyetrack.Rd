@@ -45,8 +45,9 @@ are converted to ms from the \code{Units} of \code{timestamp} in the sidecar (\c
 without units, from the step between samples and \code{SamplingFrequency}.
 \item \strong{Eyes:} recordings of the left and right eye (e.g. \code{recording-eye1}
 and \code{recording-eye2}, identified by \code{RecordedEye} in the sidecar) are
-merged by timestamp. \code{eye} works as in \code{\link[=read_asc]{read_asc()}}: \code{"average"} (mean
-of both eyes where both are valid; \code{blink} is 1 if either eye blinks),
+merged by timestamp. \code{eye} works as in \code{\link[=read_asc]{read_asc()}}: \code{"average"}
+(monocular mean: both eyes' mean, or the one valid eye; \code{blink} is 1 if
+either eye blinks),
 \code{"left"}, \code{"right"}, or \code{"both"} (per-eye columns plus the average).
 \item \strong{Events:} rows of \verb{*_physioevents.tsv.gz} with a \code{message} are attached
 to the first sample at or after their onset; rows with

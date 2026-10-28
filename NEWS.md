@@ -15,6 +15,12 @@
   stimulus (calibration dropped) or start at listed events; `blink` from Pro
   Lab's Blink classification, with eye openness kept; decimal commas
   handled.
+* Binocular averages are now the **monocular mean** (`compute_monocular_mean()`),
+  as EyeLink reports the average eye: the mean of both eyes, or the value of
+  the one valid eye, and `NA` only when neither is valid. This applies to
+  `pupil`, `x` and `y` from `read_asc()`, `read_bids_eyetrack()` and
+  `read_tobii_prolab()` with `eye = "average"` or `"both"` (before, both
+  eyes had to be valid). `blink` is still 1 if either eye is in a blink.
 
 # gazer 0.2.11
 

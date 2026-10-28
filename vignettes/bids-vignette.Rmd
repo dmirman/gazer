@@ -78,7 +78,7 @@ When a run has a recording for each eye, they are merged by timestamp and `eye` 
 
 With `"average"` and `"both"`:
 
-- `pupil` (and `x`, `y`) is the **average of the two eyes**, computed only where both eyes are valid; otherwise it is `NA`.
+- `pupil` (and `x`, `y`) is the **monocular mean** of the two eyes (`compute_monocular_mean()`), as EyeLink reports the average eye: the mean of both eyes, or the value of the one valid eye. It is `NA` only when neither eye is valid.
 - `blink` is 1 if **either** eye is in a blink.
 
 `"both"` also keeps each eye's columns (`pupil_left`, `pupil_right`, `x_left`, ..., `blink_left`, `blink_right`):

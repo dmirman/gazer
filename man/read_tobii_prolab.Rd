@@ -46,9 +46,10 @@ microseconds is assumed. Converted to ms.
 \item \strong{Pupil and gaze:} \verb{Pupil diameter left/right [mm]} and the per-eye
 \verb{Gaze point left/right X/Y} columns, falling back to the combined
 \verb{Gaze point X/Y}. Samples whose \verb{Validity left/right} is not "Valid"
-are \code{NA}. \code{eye} works as in \code{\link[=read_asc]{read_asc()}}: \code{"average"} (mean of both
-eyes where both are valid), \code{"left"}, \code{"right"} or \code{"both"}. Pupil is in
-mm.
+are \code{NA}. \code{eye} works as in \code{\link[=read_asc]{read_asc()}}: \code{"average"}, \code{"left"},
+\code{"right"} or \code{"both"}. With \code{"average"} and \code{"both"}, \code{pupil}, \code{x} and
+\code{y} are the monocular mean (\code{\link[=compute_monocular_mean]{compute_monocular_mean()}}): both eyes'
+mean, or the one valid eye. Pupil is in mm.
 \item \strong{Events:} rows with an \code{Event} (and \verb{Event value}) become messages,
 attached to the first sample at or after them. Rows from other sensors
 (mouse, keyboard) are dropped.

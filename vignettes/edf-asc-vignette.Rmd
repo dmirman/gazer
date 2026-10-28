@@ -129,8 +129,8 @@ For binocular files, `eye` chooses `"left"`, `"right"`, `"average"` (the default
 
 With `"average"` and `"both"`:
 
-- `pupil` (and `x`, `y`) is the **average of the two eyes**, computed only where both eyes are valid; otherwise it is `NA`.
-- `blink` is 1 if **either** eye is in a blink (`blink_left | blink_right`), matching the averaged `pupil`, which is missing whenever one eye is.
+- `pupil` (and `x`, `y`) is the **monocular mean** of the two eyes (`compute_monocular_mean()`), as EyeLink reports the average eye: the mean of both eyes, or the value of the one valid eye. It is `NA` only when neither eye is valid.
+- `blink` is 1 if **either** eye is in a blink (`blink_left | blink_right`). If you treat blink samples as missing, this also removes samples where `pupil` comes from the one eye that was still open.
 
 If you analyse one eye, use that eye's columns together, e.g. `pupil_left` with `blink_left`.
 
