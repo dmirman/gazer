@@ -1,8 +1,8 @@
 Package: gazer
 Type: Package
 Title: Tools for Processing Eye Tracking Data
-Version: 0.2.12
-Date: 2026-10-26
+Version: 0.2.13
+Date: 2026-10-28
 Authors@R: c(
   person("Jason", "Geller", email = "drjasongeller@gmail.com", role = c("aut", "cre")),
   person("Dan", "Mirman", email = "dan@danmirman.org", role = "aut"),
@@ -34,6 +34,7 @@ Suggests:
     lme4,
     patchwork,
     pbkrtest,
+    R.utils,
     rmarkdown,
     saccades,
     tidyverse

@@ -30,7 +30,7 @@ library(saccades)
 
 ```{r}
 # Use a file installed with the package 
-gaze_path <- system.file("extdata", "vwp_data_raw_edf.xls", package = "gazer")
+gaze_path <- system.file("extdata", "vwp_data_raw_edf.xls.gz", package = "gazer")
 gaze_raw <- data.table::fread(gaze_path) # reads in large datasets quickly
 gaze <- as_tibble(gaze_raw) # save as tibble
 summary(gaze)

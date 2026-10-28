@@ -1,3 +1,11 @@
+# gazer 0.2.13
+
+* Smaller package (about 33 MB to a few MB): the large example sample files
+  are gzipped (`pupil_sample_files_edf.xls.gz`, `vwp_data_raw_edf.xls.gz`)
+  and the unused `samp.xls` is removed. `data.table::fread()` reads the
+  `.gz` files when R.utils is installed (now in Suggests). The large package
+  made r-universe's upload time out.
+
 # gazer 0.2.12
 
 * New `zscore_pupil()`: z-scores pupil size within each participant (default,

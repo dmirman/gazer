@@ -37,7 +37,7 @@ library(tidyverse)
 ```
 
 ```{r,warning=FALSE, message=FALSE}
-pupil_path <- system.file("extdata", "pupil_sample_files_edf.xls", package = "gazer")
+pupil_path <- system.file("extdata", "pupil_sample_files_edf.xls.gz", package = "gazer")
 pupil_files1<-fread(pupil_path)
 pupil_files1 <- as_tibble(pupil_files1)
 summary(pupil_files1)

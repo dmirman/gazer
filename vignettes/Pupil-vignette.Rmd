@@ -60,7 +60,7 @@ gazer_pupil <- make_gazer(data, subject="subject", trial="subject", time="time",
 We need to read in the file that contains data from 3 participants. Given how large pupil files can be, I did this to reduce computational processing. 
 
 ```{r}
-pupil_path <- system.file("extdata", "pupil_sample_files_edf.xls", package = "gazer")
+pupil_path <- system.file("extdata", "pupil_sample_files_edf.xls.gz", package = "gazer")
 pupil_sub1<-fread(pupil_path)
 ```
 
