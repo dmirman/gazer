@@ -1,3 +1,15 @@
+# gazer 0.2.15
+
+* New `correct_pupil_gaze()`: corrects pupil size for gaze position (the
+  pupil foreshortening error; Hayes & Petrov, 2016). Within each
+  participant, pupil size is regressed on gaze x and y (quadratic or
+  linear surface; Gagl et al., 2011; Brisson et al., 2013), and the change
+  predicted between each sample's gaze position and a reference position
+  (the participant's median gaze, or e.g. the screen centre) is subtracted,
+  so values keep their units. The fit trims extreme gaze (including
+  tracker-loss codes) and never extrapolates. The `"gaze_fit"` attribute
+  gives the samples used, R², reference and largest correction per group.
+
 # gazer 0.2.14
 
 * `pupil_cor()` now returns two whole-trial measures of left-right
